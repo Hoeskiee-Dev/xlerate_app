@@ -89,50 +89,45 @@ The administrator logs in via the **Login Screen** and arrives at the **Home Das
 
 ### Learner Flow
 
-```mermaid
-flowchart TD
-    Login[Login Screen] --> Home[Home Dashboard]
-    Home -->|Click Announcement Banner| AnnType{Announcement Type}
-    AnnType -->|System| AnnPopup[Announcement Detail Popup]
-    Home -->|Click "Browse Program"| ProgList[Program List Screen]
-    Home -->|Click "Back"| Profile[Profile Screen]
-    Home -->|Click "Calendar" Button| ProdCenter[Productivity Center / Calendar]
+Login Screen
+  → Home Dashboard
+      → (Click Announcement Banner) → Announcement Detail Popup
+      → (Click "Browse Program") → Program List Screen
+      → (Click "Back") → Profile Screen
+      → (Click Calendar) → Productivity Center / Calendar
 
-    ProgList -->|Select Program| ProgDetail[Program Detail Screen]
-    ProgDetail -->|Click "Register/Join"| SuccessConf[Success Confirmation]
-    SuccessConf -->|Auto-add to Calendar| ProdCenter
+Program List Screen
+  → (Select Program) → Program Detail Screen
+      → (Click Register/Join) → Success Confirmation
+          → Auto-added to Productivity Center / Calendar
+          → (After Program Ends) → Feedback Form Screen
+              → (Submit Feedback) → Home Dashboard
 
-    ProdCenter -->|Click "Add Task/Reminder"| CreateReminder[Create Reminder/Task Screen]
-    CreateReminder -->|Submit Reminder/Task| ProdCenter
-
-    SuccessConf -->|After Program Ends| Feedback[Feedback Form Screen]
-    Feedback -->|Submit Feedback| Home
-```
+Productivity Center / Calendar
+  → (Click "Add Task/Reminder") → Create Reminder/Task Screen
+      → (Submit) → back to Productivity Center / Calendar
 
 ### Admin Flow
 
-```mermaid
-flowchart TD
-    Login[Login Screen] --> HomeDash[Home Dashboard]
-    Login -->|Click "Back"| Profile[Profile Screen]
-    HomeDash -->|Click "Calendar" or "Announcement Alert"| AnnScreen[Announcement Screen]
-    HomeDash --> ProgList[Program List Screen]
-    HomeDash --> Profile
+Login Screen
+  → Home Dashboard
+      → (Click "Back") → Profile Screen
+      → (Click Calendar/Announcement Alert) → Announcement Screen
+      → Program List Screen
 
-    AnnScreen -->|Select Announcement| AnnPopup[Announcement Detail Popup]
-    AnnScreen -->|Click "Create Announcement"| CreateAnn[Create Announcement Screen]
-    CreateAnn -->|Fill Form and Submit| AnnScreen
+Announcement Screen
+  → (Select Announcement) → Announcement Detail Popup
+  → (Click "Create Announcement") → Create Announcement Screen
+      → (Fill Form & Submit) → back to Announcement Screen
 
-    ProgList -->|Click "Add New Program"| CreateProg[Create Program Screen]
-    CreateProg -->|Fill Details and Publish| SuccessConf1[Success Confirmation]
-    SuccessConf1 -->|Program goes live| ProgList
-
-    ProgList -->|Click "Participant" icon| ProgDetail[Program Detail Screen]
-    ProgDetail -->|Click "Participants"| Participants[Participants & Responses Screen]
-    Participants -->|Click "Create Survey/Feedback Form"| CreateFeedback[Create Feedback/Response Form Screen]
-    CreateFeedback -->|Fill and Submit| SuccessConf2[Success Confirmation]
-    Participants -->|Click "Send Reminder"| SuccessConf2
-```
+Program List Screen
+  → (Click "Add New Program") → Create Program Screen
+      → (Fill Details & Publish) → Success Confirmation → Program goes live
+  → (Click "Participant" icon) → Program Detail Screen
+      → (Click "Participants") → Participants & Responses Screen
+          → (Click "Create Survey/Feedback Form") → Create Feedback/Response Form Screen
+              → (Fill & Submit) → Success Confirmation
+          → (Click "Send Reminder") → Success Confirmation
 
 ## Screens Overview
 
@@ -152,7 +147,7 @@ Based on the current wireframes, the following screens are designed or in progre
 | Create Feedback Form Screen | Admin builds a survey/feedback form for a program |
 | Submit Feedback Screen | Learner rates and comments after a program |
 
-> Wireframes for these screens are maintained in Figma; see `/design` for exported references as they're finalized.
+> Wireframes for these screens are maintained in Whimsical; see `/design` for exported references as they're finalized.
 
 ## Tech Stack
 
