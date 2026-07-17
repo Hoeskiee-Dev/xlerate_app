@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/pages/dashboard/dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -86,8 +87,13 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (form.currentState!.validate()) {
-                        // TODO: hook up actual login logic
-                    }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardPage(),
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
@@ -122,7 +128,10 @@ class _LoginPageState extends State<LoginPage> {
                     Expanded(child: Divider(color: Colors.grey[400])),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('or', style: TextStyle(color: Colors.grey[600])),
+                      child: Text(
+                        'or',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ),
                     Expanded(child: Divider(color: Colors.grey[400])),
                   ],
