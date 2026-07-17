@@ -16,27 +16,25 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
-            // * Header
-            dashboardHeader(),
+      body: ListView(
+        children: [
+          // * Header
+          dashboardHeader(),
 
-            // * Announcement Banner
-            announcementBanner(
-              context,
-              currentIndex: _currentIndex,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-            ),
+          // * Announcement Banner
+          announcementBanner(
+            context,
+            currentIndex: _currentIndex,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
 
-            // * Programs List
-            programList(),
-          ],
-        ),
+          // * Programs List
+          programList(),
+        ],
       ),
     );
   }

@@ -28,7 +28,9 @@ Widget dashboardHeader() => Padding(
       Spacer(),
 
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          // ! TODO : Navigate to Notification Page
+        },
         icon: Icon(
           Icons.notifications,
           size: 36,
