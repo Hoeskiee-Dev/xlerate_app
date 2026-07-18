@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:learners_app/models/user_model.dart';
-import 'package:learners_app/features/profile/widgets/activity.dart';
-import 'package:learners_app/features/profile/widgets/badge_card.dart';
-import 'package:learners_app/features/profile/widgets/logout_button.dart';
-import 'package:learners_app/features/profile/widgets/profile_header.dart';
+import 'package:xlerate/features/profile/widgets/activity.dart';
+import 'package:xlerate/features/profile/widgets/badge_card.dart';
+import 'package:xlerate/features/profile/widgets/logout_button.dart';
+import 'package:xlerate/features/profile/widgets/profile_header.dart';
+import 'package:xlerate/models/user_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
