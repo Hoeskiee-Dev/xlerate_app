@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../models/user_model.dart';
+import '../../../../domain/entities/user_model.dart';
 
 class ProfileHeader extends StatelessWidget {
   final UserModel user;
@@ -21,10 +21,10 @@ class ProfileHeader extends StatelessWidget {
               : null,
           child: user.imageUrl == null || user.imageUrl!.isEmpty
               ? const Icon(
-            Icons.person,
-            size: 50,
-            color: Colors.blue,
-          )
+                  Icons.person,
+                  size: 50,
+                  color: Colors.blue,
+                )
               : null,
         ),
 

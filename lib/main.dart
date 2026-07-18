@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/features/profile/profile_screen.dart';
+import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
 import 'package:xlerate/presentation/pages/login_page.dart';
 import 'presentation/pages/feedback_page.dart';
 
