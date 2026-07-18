@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/pages/login_page.dart';
 import 'presentation/pages/feedback_page.dart';
 
 void main() {
@@ -35,8 +36,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      title: 'Feedback Demo',
-      home: const FeedbackPage(),
+      title: 'Xlerate',
+      home: const LoginPage(),
     );
   }
 }
