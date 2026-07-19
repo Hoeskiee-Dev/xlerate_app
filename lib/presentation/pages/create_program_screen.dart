@@ -11,7 +11,6 @@ class CreateProgramScreen extends StatefulWidget {
 }
 
 class _CreateProgramScreenState extends State<CreateProgramScreen> {
-  // Safeguard 1: The Form Key for Validation
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
@@ -425,6 +424,14 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                     maxLines: 4,
                     controller: _descriptionController,
                     isRequired: true,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Event URL Field
+                  _buildLabeledInputField(
+                    label: 'Event URL',
+                    hint: 'Enter a link for more info...',
+                    controller: _urlController,
                   ),
                   const SizedBox(height: 16),
 
@@ -914,6 +921,29 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // This helper method needs to be inside the class to be accessible
+  Widget _buildLabeledInputField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
