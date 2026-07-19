@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/presentation/pages/dashboard/dashboard_page.dart';
+import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
 import 'package:xlerate/presentation/pages/login_page.dart';
 import 'package:xlerate/presentation/pages/program_list_screen.dart';
 
@@ -38,8 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: 'Xlerate',
-      home: const LoginPage(),
-      //home: const DashboardPage(),
+      home: const ProfileScreen(),
     );
   }
 }
