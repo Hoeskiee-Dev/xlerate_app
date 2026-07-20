@@ -19,7 +19,7 @@ class _DashboardPageState extends State<DashboardPage> {
       body: ListView(
         children: [
           // * Header
-          dashboardHeader(),
+          dashboardHeader(context),
 
           // * Announcement Banner
           announcementBanner(
@@ -33,7 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
 
           // * Programs List
-          programList(),
+          programList(context),
         ],
       ),
     );
