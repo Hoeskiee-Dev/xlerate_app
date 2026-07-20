@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/pages/create_feedback_form_screen.dart';
 import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
 import 'package:xlerate/presentation/pages/login_page.dart';
 import 'presentation/pages/feedback_page.dart';
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: 'Xlerate',
-      home: const ProfileScreen(),
+      //home: const ProfileScreen(),
+      home: const CreateFeedbackFormScreen(),
     );
   }
 }
