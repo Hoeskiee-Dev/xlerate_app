@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/presentation/pages/program/methods/apply_button.dart';
+import 'package:xlerate/presentation/pages/program/methods/attendies.dart';
 import 'package:xlerate/presentation/pages/program/methods/event_header.dart';
 import 'package:xlerate/presentation/pages/program/methods/event_title.dart';
+import 'package:xlerate/presentation/pages/program/methods/feedback_button.dart';
+import 'package:xlerate/presentation/pages/program/widgets/description_section.dart';
 
 class ProgramDetailPage extends StatelessWidget {
   const ProgramDetailPage({super.key});
@@ -17,21 +22,25 @@ class ProgramDetailPage extends StatelessWidget {
           eventTitle(),
 
           // * Attendies
-          // attendies(),
+          attendies(),
 
-          // * Description Selector
-          // descriptionSelector(),
+          // * Description Section
+          DescriptionSection(),
 
-          // * Description Content
-          // descriptionContent(),
+          verticalSpaces(16),
 
           // * Feedback Button
-          // feedbackButton(),
+          feedbackButton(
+            isEventEnded: false,
+            onPressed: () {
+              // ! TODO : Implement feedback page features
+            },
+          ),
 
-          // * Apply Button
-          // applyButton(),
+          verticalSpaces(100),
         ],
       ),
+      bottomNavigationBar: applyButton(),
     );
   }
 }
