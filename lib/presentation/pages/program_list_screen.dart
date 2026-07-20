@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/pages/program/program_detail_page.dart';
 import '../../data/program_data.dart';
 import 'create_program_screen.dart';
 
@@ -337,15 +338,19 @@ class _ProgramListScreenState extends State<ProgramListScreen>
 
     return GestureDetector(
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Opening details for ${program.title}...'),
-            backgroundColor: const Color(0xFFE91E63),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text('Opening details for ${program.title}...'),
+        //     backgroundColor: const Color(0xFFE91E63),
+        //     behavior: SnackBarBehavior.floating,
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //   ),
+        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProgramDetailPage()),
         );
       },
       child: AnimatedContainer(
