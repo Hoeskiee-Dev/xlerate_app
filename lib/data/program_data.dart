@@ -1,5 +1,49 @@
 import 'dart:io';
 
+enum QuestionType {
+  shortText,
+  longText,
+  multipleChoice,
+  checkboxes,
+  dropdown,
+  starRating,
+  fileUpload,
+  date,
+  emojiRating,
+  linearScale,
+  yesNo,
+}
+
+// Data model for a saved question
+class SavedQuestion {
+  final QuestionType type;
+  final String title;
+  final List<String> options;
+  final bool isRequired;
+
+  SavedQuestion({
+    required this.type,
+    required this.title,
+    required this.options,
+    required this.isRequired,
+  });
+}
+
+// Data model for the whole form
+class SavedFeedbackForm {
+  final String id;
+  final String title;
+  final String description;
+  final List<SavedQuestion> questions;
+
+  SavedFeedbackForm({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.questions,
+  });
+}
+
 class Program {
   final String title;
   final String description;
@@ -19,6 +63,7 @@ class Program {
   final bool offersBadge;
   final String imageUrl;
   final File? imageFile;
+  SavedFeedbackForm? feedbackForm;
 
   Program({
     required this.title,
@@ -39,6 +84,7 @@ class Program {
     required this.offersBadge,
     required this.imageUrl,
     this.imageFile,
+    this.feedbackForm,
   });
 }
 
@@ -61,6 +107,83 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/uiux/200',
+
+    // Mock Feedback Form only for the first mock program
+    feedbackForm: SavedFeedbackForm(
+      id: 'mock_form_1',
+      title: "UI/UX Masterclass Feedback",
+      description:
+          "Please share your detailed thoughts on the Figma workshop! Your feedback helps us refine our design curriculum.",
+      questions: [
+        // 1. Star Rating
+        SavedQuestion(
+          type: QuestionType.starRating,
+          title: "How would you rate the overall workshop?",
+          options: [],
+          isRequired: true,
+        ),
+
+        // 2. Emoji Rating
+        SavedQuestion(
+          type: QuestionType.emojiRating,
+          title: "How satisfied were you with the instructor's pacing?",
+          options: [
+            "😡",
+            "😕",
+            "😐",
+            "😊",
+            "🤩",
+          ],
+          isRequired: true,
+        ),
+
+        // 3. Multiple Choice
+        SavedQuestion(
+          type: QuestionType.multipleChoice,
+          title: "Which session format helped you learn the best?",
+          options: [
+            "Live Figma Demo",
+            "Breakout Exercises",
+            "Slide Deck",
+            "Q&A Session",
+          ],
+          isRequired: true,
+        ),
+
+        // 4. Checkboxes
+        SavedQuestion(
+          type: QuestionType.checkboxes,
+          title: "Which tools do you currently use? (Select all that apply)",
+          options: ["Figma", "Adobe XD", "Sketch", "Photoshop", "Framer"],
+          isRequired: false,
+        ),
+
+        // 5. Linear Scale Rating
+        SavedQuestion(
+          type: QuestionType.linearScale,
+          title:
+              "Rate the difficulty of the wireframing exercises (1: Too Easy, 5: Too Hard)",
+          options: ["1", "2", "3", "4", "5"],
+          isRequired: true,
+        ),
+
+        // 6. Short Answer
+        SavedQuestion(
+          type: QuestionType.shortText,
+          title: "What was your single biggest takeaway from the course?",
+          options: [], // Options empty for text input
+          isRequired: true,
+        ),
+
+        // 7. Paragraph Answer
+        SavedQuestion(
+          type: QuestionType.longText,
+          title: "Do you have any suggestions for improving future workshops?",
+          options: [],
+          isRequired: false,
+        ),
+      ],
+    ),
   ),
   Program(
     title: 'Data Analytics',

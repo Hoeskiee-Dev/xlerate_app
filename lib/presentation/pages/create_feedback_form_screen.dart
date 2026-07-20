@@ -1,4 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/data/program_data.dart';
+
+class FormQuestion {
+  final String id; // Unique ID
+  final QuestionType type;
+  final TextEditingController titleController;
+  final List<TextEditingController> optionsControllers;
+  bool isRequired;
+
+  FormQuestion({required this.type})
+    : id = UniqueKey().toString(),
+      titleController = TextEditingController(),
+
+      // Start with 2 blank options if it's a choice-based question
+      optionsControllers =
+          (type == QuestionType.multipleChoice ||
+              type == QuestionType.checkboxes ||
+              type == QuestionType.dropdown)
+          ? [TextEditingController(), TextEditingController()]
+          : [],
+      isRequired = false;
+
+  void dispose() {
+    titleController.dispose();
+    for (var controller in optionsControllers) {
+      controller.dispose();
+    }
+  }
+}
+
+// MAIN SCREEN
 
 class CreateFeedbackFormScreen extends StatefulWidget {
   const CreateFeedbackFormScreen({super.key});
@@ -9,337 +40,513 @@ class CreateFeedbackFormScreen extends StatefulWidget {
 }
 
 class _CreateFeedbackFormScreenState extends State<CreateFeedbackFormScreen> {
-  //Dynamic text fields
-  final List<TextEditingController> _linearControllers = [
-    TextEditingController(),
-    TextEditingController(),
-  ];
+  final TextEditingController _formTitleController = TextEditingController(
+    text: "New Feedback Form",
+  );
+  final TextEditingController _formDescController = TextEditingController();
 
-  final List<TextEditingController> _openEndedControllers = [
-    TextEditingController(),
-  ];
-
-  // Interactive checklist
-  final List<Map<String, dynamic>> _checklistQuestions = [
-    {'title': 'Is the interface easy to navigate?', 'isChecked': true},
-    {'title': 'Is the design clean?', 'isChecked': false},
-    {'title': 'Can users easily find courses?', 'isChecked': false},
-    {'title': 'Is the platform mobile friendly?', 'isChecked': false},
-    {
-      'title': 'Is content engaging and easy to understand?',
-      'isChecked': false,
-    },
-  ];
+  final List<FormQuestion> _questions = [];
 
   @override
   void dispose() {
-    for (var controller in _linearControllers) {
-      controller.dispose();
-    }
-    for (var controller in _openEndedControllers) {
-      controller.dispose();
+    _formTitleController.dispose();
+    _formDescController.dispose();
+    for (var q in _questions) {
+      q.dispose();
     }
     super.dispose();
   }
 
-  // Auto generate "First", "Second", "Third" labels
-  String _getOrdinal(int index) {
-    const ordinals = [
-      'First',
-      'Second',
-      'Third',
-      'Fourth',
-      'Fifth',
-      'Sixth',
-      'Seventh',
-      'Eighth',
-      'Ninth',
-      'Tenth',
-    ];
-    if (index < ordinals.length) {
-      return '${ordinals[index]} question';
-    }
-    return 'Question ${index + 1}';
+  // --- ACTIONS ---
+
+  void _addQuestion(QuestionType type) {
+    setState(() {
+      _questions.add(FormQuestion(type: type));
+    });
+    Navigator.pop(context);
+  }
+
+  void _showAddQuestionMenu() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20.0,
+            right: 20.0,
+            top: 20.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Add a Question",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _buildMenuOption(
+                      Icons.star,
+                      "Star Rating",
+                      QuestionType.starRating,
+                    ),
+                    _buildMenuOption(
+                      Icons.emoji_emotions,
+                      "Emoji Rating",
+                      QuestionType.emojiRating,
+                    ),
+                    _buildMenuOption(
+                      Icons.linear_scale,
+                      "Linear Scale",
+                      QuestionType.linearScale,
+                    ),
+                    _buildMenuOption(
+                      Icons.thumbs_up_down,
+                      "Yes/No",
+                      QuestionType.yesNo,
+                    ),
+                    _buildMenuOption(
+                      Icons.radio_button_checked,
+                      "Multiple Choice",
+                      QuestionType.multipleChoice,
+                    ),
+                    _buildMenuOption(
+                      Icons.check_box,
+                      "Checkboxes",
+                      QuestionType.checkboxes,
+                    ),
+                    _buildMenuOption(
+                      Icons.arrow_drop_down_circle,
+                      "Dropdown",
+                      QuestionType.dropdown,
+                    ),
+                    _buildMenuOption(
+                      Icons.short_text,
+                      "Short Answer",
+                      QuestionType.shortText,
+                    ),
+                    _buildMenuOption(
+                      Icons.notes,
+                      "Paragraph",
+                      QuestionType.longText,
+                    ),
+                    _buildMenuOption(
+                      Icons.calendar_today,
+                      "Date",
+                      QuestionType.date,
+                    ),
+                    _buildMenuOption(
+                      Icons.upload_file,
+                      "File Upload",
+                      QuestionType.fileUpload,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leadingWidth: 64,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade300, width: 1.5),
-            ),
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.grey.shade400,
-                size: 20,
-              ),
-              onPressed: () => Navigator.pop(context),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ),
+        elevation: 1,
+        shadowColor: Colors.black12,
         title: const Text(
-          "New Feedback Form",
+          "Build Form",
           style: TextStyle(
-            color: Color(0xFF2D3142),
-            fontWeight: FontWeight.bold,
+            color: Colors.black87,
             fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        titleSpacing: 12,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Let's Create feedback questions\nfor [Program Name].",
+        iconTheme: const IconThemeData(color: Colors.black87),
+        actions: [
+          TextButton(
+            onPressed: () {
+              List<SavedQuestion> compiledQuestions = _questions.map((q) {
+                return SavedQuestion(
+                  title: q.titleController.text.isNotEmpty
+                      ? q.titleController.text
+                      : "Untitled Question",
+                  type: q.type,
+                  isRequired: q.isRequired,
+                  options: q.optionsControllers.map((c) => c.text).toList(),
+                );
+              }).toList();
+
+              // Final Form
+              SavedFeedbackForm newForm = SavedFeedbackForm(
+                id: UniqueKey().toString(),
+                title: _formTitleController.text.isNotEmpty
+                    ? _formTitleController.text
+                    : "Untitled Form",
+                description: _formDescController.text,
+                questions: compiledQuestions,
+              );
+
+              // Attach the form to our mock database (the first program)
+              globalPrograms[0].feedbackForm = newForm;
+
+              // Success message
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Form published successfully!"),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Save & Publish",
               style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFF2D3142),
-                fontWeight: FontWeight.w500,
-                height: 1.4,
+                color: Color(0xFF6B4EFF),
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 24),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
 
-            // Linear Scale Questions
-            _buildSectionHeader(
-              'Linear scale questions (1 = Poor, 5 = Excellent)',
-            ),
-            const SizedBox(height: 12),
-            ...List.generate(
-              _linearControllers.length,
-              (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: _buildQuestionField(
-                  _getOrdinal(index),
-                  index == 0
-                      ? 'How clearly did the mentor explain the\nfoundational UI/UX concepts...'
-                      : index == 1
-                      ? 'How relevant was the workshop content\nto your current learning goals...'
-                      : 'Type your question here...',
-                  _linearControllers[index],
-                ),
-              ),
-            ),
-            _buildAddAnotherLink(
-              onTap: () {
-                setState(() {
-                  _linearControllers.add(TextEditingController());
-                });
-              },
-            ),
+      // Button for adding questions
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _showAddQuestionMenu,
+        backgroundColor: const Color(0xFF6B4EFF),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text(
+          "Add Question",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
 
-            // Open-ended Questions
-            _buildSectionHeader('Open-ended questions'),
-            const SizedBox(height: 12),
-            ...List.generate(
-              _openEndedControllers.length,
-              (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: _buildQuestionField(
-                  _getOrdinal(index),
-                  index == 0
-                      ? 'What part of the workshop did you enjoy\nthe most, and what can we improve...'
-                      : 'Type your question here...',
-                  _openEndedControllers[index],
-                ),
-              ),
-            ),
-            _buildAddAnotherLink(
-              onTap: () {
-                setState(() {
-                  _openEndedControllers.add(TextEditingController());
-                });
-              },
-            ),
+      body: ReorderableListView.builder(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: 100,
+        ),
+        itemCount: _questions.length + 1, // +1 for the Header Card
+        onReorderItem: (oldIndex, newIndex) {
+          setState(() {
+            if (oldIndex == 0 || newIndex == 0) return;
+            final item = _questions.removeAt(oldIndex - 1);
+            _questions.insert(newIndex - 1, item);
+          });
+        },
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _buildFormHeader(key: const ValueKey('header'));
+          }
 
-            // Checklist Questions
-            _buildSectionHeader('Checklist questions'),
-            const SizedBox(height: 12),
-            ...List.generate(
-              _checklistQuestions.length,
-              (index) => _buildCheckboxItem(index),
-            ),
-            _buildAddAnotherLink(
-              onTap: () {
-                setState(() {
-                  _checklistQuestions.add({
-                    'title': 'New checklist option...',
-                    'isChecked': false,
-                  });
-                });
-              },
-            ),
-            const SizedBox(height: 12),
+          //Dynamic questions
+          final questionIndex = index - 1;
+          final question = _questions[questionIndex];
+          return _buildQuestionCard(
+            question,
+            questionIndex,
+            key: ValueKey(question.id),
+          );
+        },
+      ),
+    );
+  }
 
-            // SUBMIT BUTTON
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6B4EFF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  elevation: 0,
-                ),
-                onPressed: () {
-                  // TODO:Save logic
-                },
-                child: const Text(
-                  "Save & Link to Program",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
+  // UI BUILDER
+
+  Widget _buildMenuOption(IconData icon, String label, QuestionType type) {
+    return InkWell(
+      onTap: () => _addQuestion(type),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: const Color(0xFF6B4EFF), size: 28),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 13,
-            color: Color(0xFF4A4A4A),
-            fontWeight: FontWeight.w500,
-          ),
+  Widget _buildFormHeader({required Key key}) {
+    return Card(
+      key: key,
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shadowColor: Colors.black12,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: const Border(
+            top: BorderSide(color: Color(0xFF6B4EFF), width: 8),
+          ), // Branded top banner
         ),
-        const SizedBox(width: 8),
-        Icon(Icons.arrow_drop_up, color: Colors.grey.shade400, size: 22),
-      ],
-    );
-  }
-
-  Widget _buildQuestionField(
-    String label,
-    String hintText,
-    TextEditingController controller,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey.shade400,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: controller,
-          maxLines: 3,
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 13,
-              height: 1.5,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: const BorderSide(
-                color: Color(0xFF6B4EFF),
-                width: 1.5,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              controller: _formTitleController,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              decoration: const InputDecoration(
+                hintText: "Form Title",
+                border: InputBorder.none,
               ),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAddAnotherLink({required VoidCallback onTap}) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: InkWell(
-        onTap: onTap,
-        child: const Padding(
-          padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
-          child: Text(
-            'Add another question?',
-            style: TextStyle(
-              color: Color(0xFF2D81D7),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+            TextField(
+              controller: _formDescController,
+              maxLines: null,
+              decoration: const InputDecoration(
+                hintText: "Form description...",
+                border: InputBorder.none,
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildCheckboxItem(int index) {
-    final item = _checklistQuestions[index];
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 20,
-            width: 20,
-            child: Checkbox(
-              value: item['isChecked'],
-              activeColor: const Color(0xFF6B4EFF),
-              side: BorderSide(color: Colors.grey.shade400, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3),
-              ),
-              onChanged: (bool? value) {
-                setState(() {
-                  _checklistQuestions[index]['isChecked'] = value ?? false;
-                });
-              },
+  Widget _buildQuestionCard(
+    FormQuestion question,
+    int index, {
+    required Key key,
+  }) {
+    return Card(
+      key: key,
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Question Drag Handle
+            Center(
+              child: Icon(Icons.drag_indicator, color: Colors.grey.shade300),
             ),
+            const SizedBox(height: 8),
+
+            // Question Title
+            TextField(
+              controller: question.titleController,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              decoration: InputDecoration(
+                hintText: "Question Title",
+                filled: true,
+                fillColor: Colors.grey.shade50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Dynamic Body
+            _buildQuestionBody(question),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Divider(),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Icon(
+                  Icons.content_copy,
+                  size: 20,
+                  color: Colors.black54,
+                ),
+                const SizedBox(width: 16),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      question.dispose();
+                      _questions.remove(question);
+                    });
+                  },
+                  child: const Icon(
+                    Icons.delete_outline,
+                    size: 22,
+                    color: Colors.redAccent,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Container(width: 1, height: 24, color: Colors.grey.shade300),
+                const SizedBox(width: 16),
+                const Text(
+                  "Required",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                Switch(
+                  value: question.isRequired,
+                  activeThumbColor: const Color(0xFF6B4EFF),
+                  onChanged: (val) {
+                    setState(() {
+                      question.isRequired = val;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuestionBody(FormQuestion question) {
+    switch (question.type) {
+      case QuestionType.yesNo:
+        return const Text(
+          "Yes/No UI goes here",
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        );
+      case QuestionType.emojiRating:
+        return const Text(
+          "Emoji Rating UI goes here",
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        );
+      case QuestionType.linearScale:
+        return const Text(
+          "Linear Scale UI goes here",
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        );
+      case QuestionType.shortText:
+        return const Text(
+          "Short answer text",
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        );
+      case QuestionType.longText:
+        return const Text(
+          "Long answer text",
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        );
+      case QuestionType.starRating:
+        return Row(
+          children: List.generate(
+            5,
+            (index) =>
+                const Icon(Icons.star_border, color: Colors.grey, size: 32),
           ),
-          const SizedBox(width: 12),
-          Expanded(
+        );
+      case QuestionType.date:
+        return Row(
+          children: [
+            const Icon(Icons.calendar_today, color: Colors.grey),
+            const SizedBox(width: 8),
+            const Text(
+              "Month, Day, Year",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        );
+      case QuestionType.fileUpload:
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.shade300,
+              style: BorderStyle.solid,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Center(
             child: Text(
-              item['title'],
-              style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF2D3142),
-                height: 1.3,
-              ),
+              "Users will upload a file here",
+              style: TextStyle(color: Colors.grey),
             ),
           ),
-        ],
-      ),
-    );
+        );
+      case QuestionType.multipleChoice:
+      case QuestionType.checkboxes:
+      case QuestionType.dropdown:
+
+        // Groups all choice-based questions
+        return Column(
+          children: [
+            ...List.generate(question.optionsControllers.length, (i) {
+              IconData leadingIcon =
+                  question.type == QuestionType.multipleChoice
+                  ? Icons.radio_button_unchecked
+                  : question.type == QuestionType.checkboxes
+                  ? Icons.check_box_outline_blank
+                  : Icons.format_list_numbered;
+              return Row(
+                children: [
+                  Icon(leadingIcon, color: Colors.grey, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: question.optionsControllers[i],
+                      decoration: InputDecoration(
+                        hintText: "Option ${i + 1}",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.grey, size: 18),
+                    onPressed: () {
+                      setState(() {
+                        question.optionsControllers[i].dispose();
+                        question.optionsControllers.removeAt(i);
+                      });
+                    },
+                  ),
+                ],
+              );
+            }),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () {
+                  setState(
+                    () => question.optionsControllers.add(
+                      TextEditingController(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add, size: 16),
+                label: const Text("Add option"),
+              ),
+            ),
+          ],
+        );
+    }
   }
 }

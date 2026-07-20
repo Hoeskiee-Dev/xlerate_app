@@ -6,6 +6,8 @@ import 'package:xlerate/presentation/pages/program/methods/event_header.dart';
 import 'package:xlerate/presentation/pages/program/methods/event_title.dart';
 import 'package:xlerate/presentation/pages/program/methods/feedback_button.dart';
 import 'package:xlerate/presentation/pages/program/widgets/description_section.dart';
+import 'package:xlerate/presentation/pages/feedback_page.dart';
+import 'package:xlerate/data/program_data.dart';
 
 class ProgramDetailPage extends StatelessWidget {
   const ProgramDetailPage({super.key});
@@ -15,16 +17,9 @@ class ProgramDetailPage extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          // * Event Header
           eventHeader(context),
-
-          // * Event Title
           eventTitle(),
-
-          // * Attendies
           attendies(),
-
-          // * Description Section
           DescriptionSection(),
 
           verticalSpaces(16),
@@ -33,10 +28,23 @@ class ProgramDetailPage extends StatelessWidget {
           feedbackButton(
             isEventEnded: false,
             onPressed: () {
-              // ! TODO : Implement feedback page features
+              // Grab the mock form attached to the first program
+              final formToLoad = globalPrograms[0].feedbackForm;
+
+              if (formToLoad != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FeedbackPage(form: formToLoad),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("No feedback form available.")),
+                );
+              }
             },
           ),
-
           verticalSpaces(100),
         ],
       ),
