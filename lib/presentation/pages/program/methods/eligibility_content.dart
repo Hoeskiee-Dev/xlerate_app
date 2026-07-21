@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/data/program_data.dart';
 
-Widget eligibilityContent() {
+Widget eligibilityContent(Program program) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -10,9 +11,7 @@ Widget eligibilityContent() {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       verticalSpaces(8),
-      Text("• Open for active university students"),
-      Text("• Basic understanding of Flutter is a plus"),
-      Text("• Passionate about software development"),
+      Text("• ${program.eligibility}"),
     ],
   );
 }

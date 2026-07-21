@@ -63,6 +63,8 @@ class Program {
   final bool offersBadge;
   final String imageUrl;
   final File? imageFile;
+  final int? totalSeats;
+  final int joinedCount;
   SavedFeedbackForm? feedbackForm;
 
   Program({
@@ -83,6 +85,8 @@ class Program {
     required this.offersCertificate,
     required this.offersBadge,
     required this.imageUrl,
+    this.totalSeats,
+    required this.joinedCount,
     this.imageFile,
     this.feedbackForm,
   });
@@ -107,6 +111,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/uiux/200',
+    totalSeats: 100,
+    joinedCount: 67,
 
     // Mock Feedback Form only for the first mock program
     feedbackForm: SavedFeedbackForm(
@@ -203,6 +209,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: false,
     imageUrl: 'https://picsum.photos/seed/data/200',
+    totalSeats: 1000,
+    joinedCount: 667,
   ),
   Program(
     title: 'Leadership Workshop',
@@ -222,6 +230,8 @@ List<Program> globalPrograms = [
     offersCertificate: false,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/lead/200',
+    totalSeats: 10,
+    joinedCount: 6,
   ),
   Program(
     title: 'Digital Marketing Strategies',
@@ -241,6 +251,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/marketing/200',
+    totalSeats: 200,
+    joinedCount: 107,
   ),
   Program(
     title: 'AI & Machine Learning',
@@ -260,6 +272,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/ai/200',
+    totalSeats: 250,
+    joinedCount: 93,
   ),
   Program(
     title: 'Sustainable Economy Panel',
@@ -279,6 +293,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: false,
     imageUrl: 'https://picsum.photos/seed/eco/200',
+    totalSeats: 50,
+    joinedCount: 47,
   ),
   Program(
     title: 'Flutter for Beginners',
@@ -299,6 +315,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 80,
+    joinedCount: 67,
   ),
   Program(
     title: 'Advanced Mobile Architecture',
@@ -319,6 +337,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 100,
+    joinedCount: 99,
   ),
   Program(
     title: 'Green Tech Entrepreneurship',
@@ -339,5 +359,7 @@ List<Program> globalPrograms = [
     offersCertificate: false,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 50,
+    joinedCount: 37,
   ),
 ];

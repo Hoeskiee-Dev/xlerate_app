@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/data/program_data.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/program_detail_page.dart';
 
@@ -19,7 +20,8 @@ Widget programList(BuildContext context) => Padding(
         itemCount: 6,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemBuilder: (context, index) => programCard(context),
+        itemBuilder: (context, index) =>
+            programCard(context, globalPrograms[index]),
 
         separatorBuilder: (context, index) => verticalSpaces(12),
       ),
@@ -27,11 +29,13 @@ Widget programList(BuildContext context) => Padding(
   ),
 );
 
-Widget programCard(BuildContext context) => GestureDetector(
+Widget programCard(BuildContext context, Program program) => GestureDetector(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProgramDetailPage()),
+      MaterialPageRoute(
+        builder: (context) => ProgramDetailPage(program: program),
+      ),
     );
   },
   child: Container(

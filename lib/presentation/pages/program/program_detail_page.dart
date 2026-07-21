@@ -10,17 +10,18 @@ import 'package:xlerate/presentation/pages/feedback_page.dart';
 import 'package:xlerate/data/program_data.dart';
 
 class ProgramDetailPage extends StatelessWidget {
-  const ProgramDetailPage({super.key});
+  final Program program;
+  const ProgramDetailPage({super.key, required this.program});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: [
-          eventHeader(context),
-          eventTitle(),
-          attendies(),
-          DescriptionSection(),
+          eventHeader(context, program),
+          eventTitle(program),
+          attendies(program),
+          DescriptionSection(program: program),
 
           verticalSpaces(16),
 
@@ -28,9 +29,8 @@ class ProgramDetailPage extends StatelessWidget {
           feedbackButton(
             isEventEnded: false,
             onPressed: () {
-              // Grab the mock form attached to the first program
-              final formToLoad = globalPrograms[0].feedbackForm;
-
+              // Grabs the specific mock form attached to the program
+              final formToLoad = program.feedbackForm;
               if (formToLoad != null) {
                 Navigator.push(
                   context,

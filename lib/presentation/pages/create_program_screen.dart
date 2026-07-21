@@ -26,6 +26,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   final TextEditingController _feeController = TextEditingController();
   final TextEditingController _tagController = TextEditingController();
   final TextEditingController _skillController = TextEditingController();
+  final TextEditingController _totalSeatsController = TextEditingController();
 
   // Event Details
   File? _selectedImage;
@@ -336,7 +337,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                         flex: 2,
                         child: _buildValidatedInputField(
                           label: 'Available Seats',
-                          hint: '40',
+                          hint: 'Empty means ∞',
                           controller: _seatsController,
                           isNumber: true,
                         ),
@@ -595,6 +596,10 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       offersBadge: _offersBadge,
       imageUrl: 'https://picsum.photos/200',
       imageFile: _selectedImage,
+      totalSeats: _totalSeatsController.text.trim().isEmpty
+          ? null
+          : int.tryParse(_totalSeatsController.text.trim()),
+      joinedCount: 0,
     );
 
     globalPrograms.insert(0, newProgram);
