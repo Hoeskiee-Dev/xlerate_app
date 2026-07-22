@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/pages/dashboard/dashboard_page.dart';
 import 'package:xlerate/presentation/pages/main_page.dart';
+import 'package:xlerate/presentation/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -93,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                           MaterialPageRoute(
                             builder: (context) => MainPage(),
                           ),
-                          ModalRoute.withName('/'),
+                          ModalRoute.withName(''),
                         );
                       }
                     },
@@ -115,7 +116,12 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Don't have an account? "),
                     GestureDetector(
                       onTap: () {
-                        // TODO: navigate to register screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterPage(),
+                          ),
+                        );
                       },
                       child: const Text(
                         'Register here',
