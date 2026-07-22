@@ -1,5 +1,49 @@
 import 'dart:io';
 
+enum QuestionType {
+  shortText,
+  longText,
+  multipleChoice,
+  checkboxes,
+  dropdown,
+  starRating,
+  fileUpload,
+  date,
+  emojiRating,
+  linearScale,
+  yesNo,
+}
+
+// Data model for a saved question
+class SavedQuestion {
+  final QuestionType type;
+  final String title;
+  final List<String> options;
+  final bool isRequired;
+
+  SavedQuestion({
+    required this.type,
+    required this.title,
+    required this.options,
+    required this.isRequired,
+  });
+}
+
+// Data model for the whole form
+class SavedFeedbackForm {
+  final String id;
+  final String title;
+  final String description;
+  final List<SavedQuestion> questions;
+
+  SavedFeedbackForm({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.questions,
+  });
+}
+
 class Program {
   final String title;
   final String description;
@@ -19,6 +63,9 @@ class Program {
   final bool offersBadge;
   final String imageUrl;
   final File? imageFile;
+  final int? totalSeats;
+  final int joinedCount;
+  SavedFeedbackForm? feedbackForm;
 
   Program({
     required this.title,
@@ -38,7 +85,10 @@ class Program {
     required this.offersCertificate,
     required this.offersBadge,
     required this.imageUrl,
+    this.totalSeats,
+    required this.joinedCount,
     this.imageFile,
+    this.feedbackForm,
   });
 }
 
@@ -61,6 +111,125 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/uiux/200',
+    totalSeats: 100,
+    joinedCount: 67,
+
+    // Mock Feedback Form only for the first mock program
+    feedbackForm: SavedFeedbackForm(
+      id: 'mock_form_1',
+      title: "UI/UX Masterclass Feedback",
+      description:
+          "Please share your detailed thoughts on the Figma workshop! Your feedback helps us refine our design curriculum.",
+      questions: [
+        // 1. Star Rating
+        SavedQuestion(
+          type: QuestionType.starRating,
+          title: "How would you rate the overall workshop?",
+          options: [],
+          isRequired: true,
+        ),
+
+        // 2. Emoji Rating
+        SavedQuestion(
+          type: QuestionType.emojiRating,
+          title: "How satisfied were you with the instructor's pacing?",
+          options: [
+            "😡",
+            "😕",
+            "😐",
+            "😊",
+            "🤩",
+          ],
+          isRequired: true,
+        ),
+
+        // 3. Linear Scale Rating
+        SavedQuestion(
+          type: QuestionType.linearScale,
+          title:
+              "Rate the difficulty of the wireframing exercises (1: Too Easy, 5: Too Hard)",
+          options: ["1", "2", "3", "4", "5"],
+          isRequired: true,
+        ),
+
+        // 4. Yes / No
+        SavedQuestion(
+          type: QuestionType.yesNo,
+          title:
+              "Would you recommend this masterclass to a friend or colleague?",
+          options: ["Yes", "No"],
+          isRequired: true,
+        ),
+
+        // 5. Multiple Choice
+        SavedQuestion(
+          type: QuestionType.multipleChoice,
+          title: "Which session format helped you learn the best?",
+          options: [
+            "Live Figma Demo",
+            "Breakout Exercises",
+            "Slide Deck",
+            "Q&A Session",
+          ],
+          isRequired: true,
+        ),
+
+        // 6. Checkboxes
+        SavedQuestion(
+          type: QuestionType.checkboxes,
+          title: "Which tools do you currently use? (Select all that apply)",
+          options: ["Figma", "Adobe XD", "Sketch", "Photoshop", "Framer"],
+          isRequired: false,
+        ),
+
+        // 7. Dropdown
+        SavedQuestion(
+          type: QuestionType.dropdown,
+          title: "What is your current primary professional role?",
+          options: [
+            "UI/UX Designer",
+            "Product Manager",
+            "Software Developer",
+            "Graphic Designer",
+            "Student / Learner",
+          ],
+          isRequired: true,
+        ),
+
+        // 8. Short Answer
+        SavedQuestion(
+          type: QuestionType.shortText,
+          title: "What was your single biggest takeaway from the course?",
+          options: [],
+          isRequired: true,
+        ),
+
+        // 9. Paragraph Answer (Long Text)
+        SavedQuestion(
+          type: QuestionType.longText,
+          title: "Do you have any suggestions for improving future workshops?",
+          options: [],
+          isRequired: false,
+        ),
+
+        // 10. Date & File Upload
+        SavedQuestion(
+          type: QuestionType.date,
+          title:
+              "On which date did you complete your final project submission?",
+          options: [],
+          isRequired: true,
+        ),
+
+        SavedQuestion(
+          type: QuestionType.fileUpload,
+          title:
+              "Please upload your final Figma wireframe export (PDF or Image)",
+          options: [],
+          isRequired: false,
+        ),
+      ],
+    ),
   ),
   Program(
     title: 'Data Analytics',
@@ -80,6 +249,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: false,
     imageUrl: 'https://picsum.photos/seed/data/200',
+    totalSeats: 1000,
+    joinedCount: 667,
   ),
   Program(
     title: 'Leadership Workshop',
@@ -99,6 +270,8 @@ List<Program> globalPrograms = [
     offersCertificate: false,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/lead/200',
+    totalSeats: 10,
+    joinedCount: 6,
   ),
   Program(
     title: 'Digital Marketing Strategies',
@@ -118,6 +291,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/marketing/200',
+    totalSeats: 200,
+    joinedCount: 107,
   ),
   Program(
     title: 'AI & Machine Learning',
@@ -137,6 +312,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/ai/200',
+    totalSeats: 250,
+    joinedCount: 93,
   ),
   Program(
     title: 'Sustainable Economy Panel',
@@ -156,6 +333,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: false,
     imageUrl: 'https://picsum.photos/seed/eco/200',
+    totalSeats: 50,
+    joinedCount: 47,
   ),
   Program(
     title: 'Flutter for Beginners',
@@ -176,6 +355,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 80,
+    joinedCount: 67,
   ),
   Program(
     title: 'Advanced Mobile Architecture',
@@ -196,6 +377,8 @@ List<Program> globalPrograms = [
     offersCertificate: true,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 100,
+    joinedCount: 99,
   ),
   Program(
     title: 'Green Tech Entrepreneurship',
@@ -216,5 +399,7 @@ List<Program> globalPrograms = [
     offersCertificate: false,
     offersBadge: true,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
+    totalSeats: 50,
+    joinedCount: 37,
   ),
 ];

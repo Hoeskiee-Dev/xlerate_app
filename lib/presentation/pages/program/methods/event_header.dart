@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/data/program_data.dart';
 
-Widget eventHeader(BuildContext context) => Stack(
+Widget eventHeader(BuildContext context, Program program) => Stack(
   children: [
     // * Event image
     Image.network(
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTguSCP9bOkyKIXkeatwy8Unw3GTQPm3kagBT0Yzkh2vXyXpS75jSpj-Qkb&s=10",
+      program.imageUrl,
       width: double.infinity,
       height: 250,
       fit: BoxFit.cover,
@@ -71,15 +72,45 @@ Widget eventHeader(BuildContext context) => Stack(
         padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
-          color: Colors.grey.shade600.withOpacity(0.8),
+          color: Colors.grey.withAlpha(204),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(
-          "Excelerate | Tech",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              program.host,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(
+                    text: " | ",
+                    style: TextStyle(
+                      color: Color.fromARGB(
+                        255,
+                        199,
+                        22,
+                        161,
+                      ),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: program.speaker,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     ),

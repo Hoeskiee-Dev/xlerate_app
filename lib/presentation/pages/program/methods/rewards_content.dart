@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/data/program_data.dart';
 
-Widget rewardsContent() {
+Widget rewardsContent(Program program) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -24,9 +25,7 @@ Widget rewardsContent() {
       ),
 
       verticalSpaces(8),
-      Text("• Creative Thinking"),
-      Text("• Internship opportunity at Excelerate"),
-      Text("• Free Mentorship Session"),
+      ...program.skills.map((skill) => Text("• $skill")),
     ],
   );
 }

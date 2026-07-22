@@ -3,10 +3,11 @@ import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/methods/details_content.dart';
 import 'package:xlerate/presentation/pages/program/methods/eligibility_content.dart';
 import 'package:xlerate/presentation/pages/program/methods/rewards_content.dart';
+import 'package:xlerate/data/program_data.dart';
 
 class DescriptionSection extends StatefulWidget {
-  const DescriptionSection({super.key});
-
+  final Program program;
+  const DescriptionSection({super.key, required this.program});
   @override
   State<DescriptionSection> createState() => _DescriptionSectionState();
 }
@@ -94,13 +95,15 @@ class _DescriptionSectionState extends State<DescriptionSection> {
   Widget _buildTabContent() {
     switch (_selectedTabIndex) {
       case 0:
-        return detailsContent();
+        return detailsContent(
+          widget.program,
+        );
       case 1:
-        return eligibilityContent();
+        return eligibilityContent(widget.program);
       case 2:
-        return rewardsContent();
+        return rewardsContent(widget.program);
       default:
-        return detailsContent();
+        return detailsContent(widget.program);
     }
   }
 }
