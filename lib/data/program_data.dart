@@ -61,11 +61,18 @@ class Program {
   final double fee;
   final bool offersCertificate;
   final bool offersBadge;
+  final bool offersMicroScholarships;
+  final bool offersLetterOfRecommendation;
+  final bool offersPhysicalSwags;
+  final bool offersXleratePoints;
+  final int? xpAmount;
+  final String? extraReward;
   final String imageUrl;
   final File? imageFile;
   final int? totalSeats;
   final int joinedCount;
   SavedFeedbackForm? feedbackForm;
+  final String? registrationDeadLine;
 
   Program({
     required this.title,
@@ -84,35 +91,50 @@ class Program {
     required this.fee,
     required this.offersCertificate,
     required this.offersBadge,
+    required this.offersMicroScholarships,
+    required this.offersLetterOfRecommendation,
+    required this.offersPhysicalSwags,
+    required this.offersXleratePoints,
+    this.xpAmount,
+    this.extraReward,
     required this.imageUrl,
     this.totalSeats,
     required this.joinedCount,
     this.imageFile,
     this.feedbackForm,
+    this.registrationDeadLine,
   });
 }
 
 List<Program> globalPrograms = [
   Program(
-    title: 'UI/UX Masterclass',
+    title: 'The Ultimate Bootcamp',
     description:
-        'Learn Figma basics and foundational UI/UX concepts from industry experts.',
+        'An intensive, hybrid 5-day bootcamp where you will learn advanced product building. Complete this course to unlock every single reward available in the Xlerate ecosystem!',
     host: 'Excelerate',
-    speaker: 'Alex Uzbek, B.Cs.',
-    startDate: 'Oct 12, 2026',
+    speaker: 'Alex Uzbek, B.Cs',
+    startDate: '10/15/26',
+    endDate: '10/20/26',
     time: '10:00 AM',
-    locationType: 'Virtual',
-    location: 'Zoom Link provided upon registration',
-    tag: 'Tech, Design',
-    skills: ['Wireframing', 'Prototyping', 'User Research'],
-    eligibility: 'All Levels',
+    locationType: 'Hybrid',
+    location: 'Zoom & Xlerate HQ',
+    tag: 'Tech, Design, Masterclass',
+    skills: ['Critical Thinking', 'Creative Thinking', 'Productivity'],
+    eligibility: 'High School & University Students',
     isFree: true,
     fee: 0.0,
+    imageUrl: 'https://picsum.photos/id/20/400/300',
+    totalSeats: 50,
+    joinedCount: 42,
+    registrationDeadLine: 'Oct 12th',
     offersCertificate: true,
     offersBadge: true,
-    imageUrl: 'https://picsum.photos/seed/uiux/200',
-    totalSeats: 100,
-    joinedCount: 67,
+    offersMicroScholarships: true,
+    offersLetterOfRecommendation: true,
+    offersPhysicalSwags: true,
+    offersXleratePoints: true,
+    xpAmount: 2500, // They earn 2500 XP for completing this!
+    extraReward: '1-on-1 Mentorship & 1 Year Figma Pro License',
 
     // Mock Feedback Form only for the first mock program
     feedbackForm: SavedFeedbackForm(
@@ -248,9 +270,14 @@ List<Program> globalPrograms = [
     fee: 25.0,
     offersCertificate: true,
     offersBadge: false,
+    offersMicroScholarships: true,
+    offersLetterOfRecommendation: false,
+    offersPhysicalSwags: true,
+    offersXleratePoints: false,
     imageUrl: 'https://picsum.photos/seed/data/200',
     totalSeats: 1000,
     joinedCount: 667,
+    registrationDeadLine: 'Oct 12th',
   ),
   Program(
     title: 'Leadership Workshop',
@@ -269,9 +296,15 @@ List<Program> globalPrograms = [
     fee: 0.0,
     offersCertificate: false,
     offersBadge: true,
+    offersMicroScholarships: false,
+    offersLetterOfRecommendation: true,
+    offersPhysicalSwags: false,
+    offersXleratePoints: true,
+    xpAmount: 1500,
     imageUrl: 'https://picsum.photos/seed/lead/200',
     totalSeats: 10,
     joinedCount: 6,
+    registrationDeadLine: 'Oct 15th',
   ),
   Program(
     title: 'Digital Marketing Strategies',
@@ -290,9 +323,15 @@ List<Program> globalPrograms = [
     fee: 15.0,
     offersCertificate: true,
     offersBadge: true,
+    offersMicroScholarships: true,
+    offersLetterOfRecommendation: false,
+    offersPhysicalSwags: false,
+    offersXleratePoints: true,
+    xpAmount: 2000,
     imageUrl: 'https://picsum.photos/seed/marketing/200',
     totalSeats: 200,
     joinedCount: 107,
+    registrationDeadLine: 'Oct 19th',
   ),
   Program(
     title: 'AI & Machine Learning',
@@ -311,9 +350,14 @@ List<Program> globalPrograms = [
     fee: 0.0,
     offersCertificate: true,
     offersBadge: true,
+    offersMicroScholarships: false,
+    offersLetterOfRecommendation: true,
+    offersPhysicalSwags: true,
+    offersXleratePoints: false,
     imageUrl: 'https://picsum.photos/seed/ai/200',
     totalSeats: 250,
     joinedCount: 93,
+    registrationDeadLine: 'Oct 22nd',
   ),
   Program(
     title: 'Sustainable Economy Panel',
@@ -332,9 +376,15 @@ List<Program> globalPrograms = [
     fee: 0.0,
     offersCertificate: true,
     offersBadge: false,
+    offersMicroScholarships: false,
+    offersLetterOfRecommendation: true,
+    offersPhysicalSwags: true,
+    offersXleratePoints: true,
+    xpAmount: 5000,
     imageUrl: 'https://picsum.photos/seed/eco/200',
     totalSeats: 50,
     joinedCount: 47,
+    registrationDeadLine: 'Oct 30th',
   ),
   Program(
     title: 'Flutter for Beginners',
@@ -354,9 +404,15 @@ List<Program> globalPrograms = [
     fee: 10.0,
     offersCertificate: true,
     offersBadge: true,
+    offersMicroScholarships: true,
+    offersLetterOfRecommendation: false,
+    offersPhysicalSwags: true,
+    offersXleratePoints: true,
+    xpAmount: 500,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
     totalSeats: 80,
     joinedCount: 67,
+    registrationDeadLine: 'Nov 3rd',
   ),
   Program(
     title: 'Advanced Mobile Architecture',
@@ -376,9 +432,14 @@ List<Program> globalPrograms = [
     fee: 10.0,
     offersCertificate: true,
     offersBadge: true,
+    offersMicroScholarships: false,
+    offersLetterOfRecommendation: false,
+    offersPhysicalSwags: true,
+    offersXleratePoints: false,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
     totalSeats: 100,
     joinedCount: 99,
+    registrationDeadLine: 'Nov 2nd',
   ),
   Program(
     title: 'Green Tech Entrepreneurship',
@@ -398,8 +459,13 @@ List<Program> globalPrograms = [
     fee: 10.0,
     offersCertificate: false,
     offersBadge: true,
+    offersMicroScholarships: false,
+    offersLetterOfRecommendation: true,
+    offersPhysicalSwags: false,
+    offersXleratePoints: false,
     imageUrl: 'https://picsum.photos/seed/flutter/200',
     totalSeats: 50,
     joinedCount: 37,
+    registrationDeadLine: ' Nov 4th',
   ),
 ];

@@ -35,6 +35,13 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   bool _isFree = true;
   bool _offersCertificate = false;
   bool _offersBadge = false;
+  bool _offersMicroScholarships = false;
+  bool _offersLetterOfRecommendation = false;
+  bool _offersPhysicalSwags = false;
+  bool _offersXleratePoints = false;
+  final TextEditingController _xpAmountController = TextEditingController();
+  final TextEditingController _extraRewardController = TextEditingController();
+
   String _locationType = 'In-Person';
 
   DateTime? _startDate;
@@ -460,23 +467,65 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                     'Rewards Offered',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
-                  Row(
+                  Wrap(
+                    spacing: 12.0,
+                    runSpacing: -8.0,
                     children: [
-                      Checkbox(
-                        value: _offersCertificate,
-                        activeColor: const Color(0xFF5E5CE6),
-                        onChanged: (val) =>
-                            setState(() => _offersCertificate = val!),
+                      _buildRewardCheckbox('Certificate', _offersCertificate, (
+                        val,
+                      ) {
+                        setState(() => _offersCertificate = val!);
+                      }),
+                      _buildRewardCheckbox('Digital Badge', _offersBadge, (
+                        val,
+                      ) {
+                        setState(() => _offersBadge = val!);
+                      }),
+                      _buildRewardCheckbox(
+                        'Micro-Scholarships',
+                        _offersMicroScholarships,
+                        (val) {
+                          setState(() => _offersMicroScholarships = val!);
+                        },
                       ),
-                      const Text('Certificate'),
-                      const SizedBox(width: 20),
-                      Checkbox(
-                        value: _offersBadge,
-                        activeColor: const Color(0xFF5E5CE6),
-                        onChanged: (val) => setState(() => _offersBadge = val!),
+                      _buildRewardCheckbox(
+                        'Letter of Recommendation',
+                        _offersLetterOfRecommendation,
+                        (val) {
+                          setState(() => _offersLetterOfRecommendation = val!);
+                        },
                       ),
-                      const Text('Digital Badge'),
+                      _buildRewardCheckbox(
+                        'Physical Swags',
+                        _offersPhysicalSwags,
+                        (val) {
+                          setState(() => _offersPhysicalSwags = val!);
+                        },
+                      ),
+                      _buildRewardCheckbox(
+                        'Xlerate Points/XP',
+                        _offersXleratePoints,
+                        (val) {
+                          setState(() => _offersXleratePoints = val!);
+                        },
+                      ),
                     ],
+                  ),
+                  if (_offersXleratePoints) ...[
+                    const SizedBox(height: 16),
+                    _buildValidatedInputField(
+                      label: 'XP Amount *',
+                      hint: 'e.g., 500',
+                      controller: _xpAmountController,
+                      isNumber: true,
+                      isRequired: true,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  _buildLabeledInputField(
+                    label: 'Extra Rewards (Optional)',
+                    hint: 'e.g., 1-on-1 Mentorship, Figma Pro License',
+                    controller: _extraRewardController,
                   ),
                 ],
               ),
@@ -594,6 +643,18 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       fee: _isFree ? 0.0 : double.tryParse(_feeController.text) ?? 0.0,
       offersCertificate: _offersCertificate,
       offersBadge: _offersBadge,
+      offersMicroScholarships: _offersMicroScholarships,
+      offersLetterOfRecommendation: _offersLetterOfRecommendation,
+      offersPhysicalSwags: _offersPhysicalSwags,
+      offersXleratePoints: _offersXleratePoints,
+      xpAmount: _offersXleratePoints
+          ? int.tryParse(_xpAmountController.text.trim())
+          : null,
+      extraReward: _extraRewardController.text.trim().isNotEmpty
+          ? _extraRewardController.text.trim()
+          : null,
+
+      // -------------------------------------
       imageUrl: 'https://picsum.photos/200',
       imageFile: _selectedImage,
       totalSeats: _totalSeatsController.text.trim().isEmpty
@@ -943,6 +1004,29 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
         ),
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  Widget _buildRewardCheckbox(
+    String title,
+    bool currentValue,
+    Function(bool?) onChanged,
+  ) {
+    return IntrinsicWidth(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(
+            value: currentValue,
+            onChanged: onChanged,
+            activeColor: const Color(0xFF5E5CE6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          Text(title, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
     );
   }
 }
