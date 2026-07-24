@@ -1,7 +1,7 @@
 // file: presentation/pages/main/main_page.dart
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/pages/dashboard/dashboard_page.dart';
-import 'package:xlerate/presentation/pages/productivity_page.dart';
+import 'package:xlerate/presentation/pages/productivity_screen.dart';
 import 'package:xlerate/presentation/pages/program_list_screen.dart';
 
 class MainPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _screens = [
     const DashboardPage(),
     const ProgramListScreen(),
-    const ProductivityPage(),
+    const ProductivityScreen(),
   ];
 
   @override

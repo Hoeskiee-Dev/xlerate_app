@@ -42,8 +42,18 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
   final List<String> weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   List<EventItem> _currentMonthEvents = [];
   static const List<String> _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   final List<String> _eventTitles = [
@@ -63,7 +73,8 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
   List<Task> tasks = [
     Task(
       title: 'Create app briefing',
-      description: 'Need to create app briefing like wireframe, app purpose, etc.',
+      description:
+          'Need to create app briefing like wireframe, app purpose, etc.',
       startDate: DateTime(2026, 7, 11),
       dueDate: DateTime(2026, 7, 13, 23, 59),
       priority: 'High',
@@ -77,7 +88,8 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
     ),
     Task(
       title: 'Meeting for brief',
-      description: 'Team sync to review the app briefing before starting design.',
+      description:
+          'Team sync to review the app briefing before starting design.',
       startDate: DateTime(2026, 7, 13),
       dueDate: DateTime(2026, 7, 28, 23, 59),
       priority: 'Low',
@@ -99,17 +111,21 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
         return Colors.grey;
     }
   }
+
   EventItem? _programOnDay(int day) {
-  for (var event in _currentMonthEvents) {
-    if (event.day == day) return event;
+    for (var event in _currentMonthEvents) {
+      if (event.day == day) return event;
+    }
+    return null;
   }
-  return null;
-}
+
   String _monthName(int month) => _monthNames[month - 1];
 
   int _daysInMonth(DateTime month) {
     final firstDayNextMonth = DateTime(month.year, month.month + 1, 1);
-    final lastDayThisMonth = firstDayNextMonth.subtract(const Duration(days: 1));
+    final lastDayThisMonth = firstDayNextMonth.subtract(
+      const Duration(days: 1),
+    );
     return lastDayThisMonth.day;
   }
 
@@ -126,14 +142,24 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
     return '$hour.$minute $period';
   }
 
-  String _formatDateOnly(DateTime dt) => '${dt.day} ${_monthName(dt.month)} ${dt.year}';
+  String _formatDateOnly(DateTime dt) =>
+      '${dt.day} ${_monthName(dt.month)} ${dt.year}';
 
-  String _formatDateWithTime(DateTime dt) => '${_formatTime(dt)}, ${_formatDateOnly(dt)}';
+  String _formatDateWithTime(DateTime dt) =>
+      '${_formatTime(dt)}, ${_formatDateOnly(dt)}';
 
   // today counts as "relevant" if it's on/after startDate and on/before dueDate
   bool _isRelevantToday(Task task) {
-    final start = DateTime(task.startDate.year, task.startDate.month, task.startDate.day);
-    final due = DateTime(task.dueDate.year, task.dueDate.month, task.dueDate.day);
+    final start = DateTime(
+      task.startDate.year,
+      task.startDate.month,
+      task.startDate.day,
+    );
+    final due = DateTime(
+      task.dueDate.year,
+      task.dueDate.month,
+      task.dueDate.day,
+    );
     final todayOnly = DateTime(today.year, today.month, today.day);
     return !todayOnly.isBefore(start) && !todayOnly.isAfter(due);
   }
@@ -141,8 +167,16 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
   List<Task> _tasksActiveOnDay(int day) {
     final date = DateTime(displayedMonth.year, displayedMonth.month, day);
     return tasks.where((task) {
-      final start = DateTime(task.startDate.year, task.startDate.month, task.startDate.day);
-      final due = DateTime(task.dueDate.year, task.dueDate.month, task.dueDate.day);
+      final start = DateTime(
+        task.startDate.year,
+        task.startDate.month,
+        task.startDate.day,
+      );
+      final due = DateTime(
+        task.dueDate.year,
+        task.dueDate.month,
+        task.dueDate.day,
+      );
       return !date.isBefore(start) && !date.isAfter(due);
     }).toList();
   }
@@ -150,7 +184,8 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
   Set<int> _taskDueDaysInDisplayedMonth() {
     Set<int> days = {};
     for (var task in tasks) {
-      if (task.dueDate.year == displayedMonth.year && task.dueDate.month == displayedMonth.month) {
+      if (task.dueDate.year == displayedMonth.year &&
+          task.dueDate.month == displayedMonth.month) {
         days.add(task.dueDate.day);
       }
     }
@@ -175,13 +210,15 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
     ];
   }
 
-//Task Popup
+  //Task Popup
   void _showTaskPopup(Task task) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -194,7 +231,10 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                     Expanded(
                       child: Text(
                         task.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                     GestureDetector(
@@ -204,9 +244,15 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                const Text('Task Description', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Task Description',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 4),
-                Text(task.description, style: TextStyle(color: Colors.grey[700])),
+                Text(
+                  task.description,
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
                 const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,11 +261,23 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Start Date', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          const Text(
+                            'Start Date',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           _buildDashedLine(),
                           const SizedBox(height: 4),
-                          Text(_formatDateOnly(task.startDate), style: TextStyle(color: Colors.grey[700], fontSize: 12)),
+                          Text(
+                            _formatDateOnly(task.startDate),
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -228,7 +286,11 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                       child: Column(
                         children: const [
                           SizedBox(height: 8),
-                          Icon(Icons.calendar_today, size: 16, color: Colors.deepPurple),
+                          Icon(
+                            Icons.calendar_today,
+                            size: 16,
+                            color: Colors.deepPurple,
+                          ),
                         ],
                       ),
                     ),
@@ -236,11 +298,23 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text('End Date', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          const Text(
+                            'End Date',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           _buildDashedLine(),
                           const SizedBox(height: 4),
-                          Text(_formatDateOnly(task.dueDate), style: TextStyle(color: Colors.grey[700], fontSize: 12)),
+                          Text(
+                            _formatDateOnly(task.dueDate),
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -264,7 +338,9 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
                       disabledBackgroundColor: Colors.grey[300],
                       disabledForegroundColor: Colors.grey[600],
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     child: Text(task.isDone ? 'Completed' : 'Mark as complete'),
                   ),
@@ -281,14 +357,17 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         const dashWidth = 4.0;
-        final dashCount = (constraints.constrainWidth() / (dashWidth * 2)).floor();
+        final dashCount = (constraints.constrainWidth() / (dashWidth * 2))
+            .floor();
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(dashCount, (_) {
             return SizedBox(
               width: dashWidth,
               height: 1,
-              child: DecoratedBox(decoration: BoxDecoration(color: Colors.grey[400])),
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Colors.grey[400]),
+              ),
             );
           }),
         );
@@ -296,80 +375,104 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
     );
   }
 
-// Day Tasks
-void _showDayTasksPopup(int day) {
-  final dayTasks = _tasksActiveOnDay(day);
-  final program = _programOnDay(day);
-  final dateLabel = '$day ${_monthName(displayedMonth.month)} ${displayedMonth.year}';
+  // Day Tasks
+  void _showDayTasksPopup(int day) {
+    final dayTasks = _tasksActiveOnDay(day);
+    final program = _programOnDay(day);
+    final dateLabel =
+        '$day ${_monthName(displayedMonth.month)} ${displayedMonth.year}';
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(dateLabel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              const SizedBox(height: 12),
-
-              if (program != null) ...[
-                const Text('Registered Program', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                const SizedBox(height: 6),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.event, color: Colors.deepPurple, size: 18),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(program.title)),
-                    ],
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dateLabel,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-                const SizedBox(height: 16),
-              ],
+                const SizedBox(height: 12),
 
-              const Text('Tasks', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-              const SizedBox(height: 6),
-              if (dayTasks.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text('No tasks for this date.', style: TextStyle(color: Colors.grey[600])),
-                )
-              else
-                ...dayTasks.map((task) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      task.title,
-                      style: TextStyle(
-                        decoration: task.isDone ? TextDecoration.lineThrough : TextDecoration.none,
-                      ),
+                if (program != null) ...[
+                  const Text(
+                    'Registered Program',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    subtitle: Text(task.priority),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _showTaskPopup(task);
-                    },
-                  );
-                }),
-            ],
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.event,
+                          color: Colors.deepPurple,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(program.title)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                const Text(
+                  'Tasks',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                const SizedBox(height: 6),
+                if (dayTasks.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      'No tasks for this date.',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  )
+                else
+                  ...dayTasks.map((task) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        task.title,
+                        style: TextStyle(
+                          decoration: task.isDone
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
+                      subtitle: Text(task.priority),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _showTaskPopup(task);
+                      },
+                    );
+                  }),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-  
-//Checklist
+        );
+      },
+    );
+  }
+
+  //Checklist
 
   Widget _buildStatCard({
     required IconData icon,
@@ -389,8 +492,18 @@ void _showDayTasksPopup(int day) {
           children: [
             Icon(icon, color: color),
             const SizedBox(height: 8),
-            Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
-            Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
           ],
         ),
       ),
@@ -462,7 +575,9 @@ void _showDayTasksPopup(int day) {
             const SizedBox(width: 12),
             _buildStatCard(
               icon: Icons.check_circle,
-              value: totalCount == 0 ? '0%' : '${((completedCount / totalCount) * 100).round()}%',
+              value: totalCount == 0
+                  ? '0%'
+                  : '${((completedCount / totalCount) * 100).round()}%',
               label: 'Completion rate',
               color: Colors.deepPurple,
             ),
@@ -491,7 +606,10 @@ void _showDayTasksPopup(int day) {
         if (relevantTasks.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text('No tasks for today.', style: TextStyle(color: Colors.grey[500])),
+            child: Text(
+              'No tasks for today.',
+              style: TextStyle(color: Colors.grey[500]),
+            ),
           ),
         ...relevantTasks.map((task) {
           return GestureDetector(
@@ -523,20 +641,31 @@ void _showDayTasksPopup(int day) {
                         ),
                         Text(
                           _formatDateWithTime(task.dueDate),
-                          style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: _priorityColor(task.priority).withValues(alpha: 0.15),
+                      color: _priorityColor(
+                        task.priority,
+                      ).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       task.priority,
-                      style: TextStyle(color: _priorityColor(task.priority), fontSize: 12),
+                      style: TextStyle(
+                        color: _priorityColor(task.priority),
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ],
@@ -552,7 +681,12 @@ void _showDayTasksPopup(int day) {
 
   // Calendar
 
-  Widget _buildDayCell(int day, bool isTaskDay, bool isProgramDay, bool isToday) {
+  Widget _buildDayCell(
+    int day,
+    bool isTaskDay,
+    bool isProgramDay,
+    bool isToday,
+  ) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -590,7 +724,8 @@ void _showDayTasksPopup(int day) {
       ],
     );
   }
-//Calendar Grid
+
+  //Calendar Grid
   Widget _buildCalendarGrid(Set<int> taskDueDays, Set<int> programDays) {
     int daysInMonth = _daysInMonth(displayedMonth);
     int firstWeekday = _firstWeekday(displayedMonth);
@@ -602,14 +737,20 @@ void _showDayTasksPopup(int day) {
     }
 
     for (int day = 1; day <= daysInMonth; day++) {
-      final isToday = displayedMonth.year == today.year &&
+      final isToday =
+          displayedMonth.year == today.year &&
           displayedMonth.month == today.month &&
           day == today.day;
 
       dayCells.add(
         GestureDetector(
           onTap: () => _showDayTasksPopup(day),
-          child: _buildDayCell(day, taskDueDays.contains(day), programDays.contains(day), isToday),
+          child: _buildDayCell(
+            day,
+            taskDueDays.contains(day),
+            programDays.contains(day),
+            isToday,
+          ),
         ),
       );
     }
@@ -621,7 +762,8 @@ void _showDayTasksPopup(int day) {
       children: dayCells,
     );
   }
-//Legend
+
+  //Legend
   Widget _buildLegend() {
     return Row(
       children: [
@@ -632,14 +774,18 @@ void _showDayTasksPopup(int day) {
         Container(
           width: 14,
           height: 14,
-          decoration: const BoxDecoration(color: Colors.deepPurple, shape: BoxShape.circle),
+          decoration: const BoxDecoration(
+            color: Colors.deepPurple,
+            shape: BoxShape.circle,
+          ),
         ),
         const SizedBox(width: 4),
         const Text('Registered Program', style: TextStyle(fontSize: 12)),
       ],
     );
   }
-//Upcoming
+
+  //Upcoming
   Widget _buildUpcomingSection(List<EventItem> upcomingEvents) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,12 +793,18 @@ void _showDayTasksPopup(int day) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Upcoming', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Upcoming',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             GestureDetector(
               onTap: () {
                 // TODO: navigate to full events/tasks list
               },
-              child: const Text('See All', style: TextStyle(color: Colors.deepPurple)),
+              child: const Text(
+                'See All',
+                style: TextStyle(color: Colors.deepPurple),
+              ),
             ),
           ],
         ),
@@ -671,7 +823,10 @@ void _showDayTasksPopup(int day) {
                   backgroundColor: Colors.deepPurple.withValues(alpha: 0.15),
                   child: Text(
                     '${event.day}',
-                    style: const TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.deepPurple,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -684,7 +839,8 @@ void _showDayTasksPopup(int day) {
       ],
     );
   }
-//Calendar View
+
+  //Calendar View
   Widget _buildCalendarView() {
     final upcomingEvents = _generateEventsForMonth(displayedMonth);
     _currentMonthEvents = upcomingEvents;
@@ -705,7 +861,10 @@ void _showDayTasksPopup(int day) {
                 icon: const Icon(Icons.chevron_left),
                 onPressed: () {
                   setState(() {
-                    displayedMonth = DateTime(displayedMonth.year, displayedMonth.month - 1);
+                    displayedMonth = DateTime(
+                      displayedMonth.year,
+                      displayedMonth.month - 1,
+                    );
                   });
                 },
               ),
@@ -727,7 +886,10 @@ void _showDayTasksPopup(int day) {
                 icon: const Icon(Icons.chevron_right),
                 onPressed: () {
                   setState(() {
-                    displayedMonth = DateTime(displayedMonth.year, displayedMonth.month + 1);
+                    displayedMonth = DateTime(
+                      displayedMonth.year,
+                      displayedMonth.month + 1,
+                    );
                   });
                 },
               ),
@@ -739,7 +901,10 @@ void _showDayTasksPopup(int day) {
           children: weekdays.map((day) {
             return Expanded(
               child: Center(
-                child: Text(day, style: const TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  day,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             );
           }).toList(),
@@ -754,7 +919,7 @@ void _showDayTasksPopup(int day) {
     );
   }
 
-//Main
+  //Main
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -768,7 +933,10 @@ void _showDayTasksPopup(int day) {
                 children: [
                   const Text(
                     'Productivity',
-                    style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Container(
@@ -781,7 +949,9 @@ void _showDayTasksPopup(int day) {
                       children: [
                         AnimatedAlign(
                           duration: const Duration(milliseconds: 200),
-                          alignment: showCalendar ? Alignment.centerLeft : Alignment.centerRight,
+                          alignment: showCalendar
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
                           child: FractionallySizedBox(
                             widthFactor: 0.5,
                             child: Container(
@@ -806,7 +976,9 @@ void _showDayTasksPopup(int day) {
                                   child: Text(
                                     'Calendar',
                                     style: TextStyle(
-                                      color: showCalendar ? Colors.white : Colors.black,
+                                      color: showCalendar
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -824,7 +996,9 @@ void _showDayTasksPopup(int day) {
                                   child: Text(
                                     'Checklist',
                                     style: TextStyle(
-                                      color: !showCalendar ? Colors.white : Colors.black,
+                                      color: !showCalendar
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -839,7 +1013,9 @@ void _showDayTasksPopup(int day) {
                   const SizedBox(height: 24),
                   Expanded(
                     child: SingleChildScrollView(
-                      child: showCalendar ? _buildCalendarView() : _buildChecklistView(),
+                      child: showCalendar
+                          ? _buildCalendarView()
+                          : _buildChecklistView(),
                     ),
                   ),
                 ],
@@ -847,25 +1023,6 @@ void _showDayTasksPopup(int day) {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: showCalendar ? 2 : 1,
-        onTap: (int index) {
-          setState(() {
-            if (index == 2) {
-              showCalendar = true;
-            } else if (index == 1) {
-              showCalendar = false;
-            }
-          });
-        },
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
-        ],
       ),
     );
   }
