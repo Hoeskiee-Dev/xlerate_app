@@ -102,13 +102,13 @@ class Program {
     required this.joinedCount,
     this.imageFile,
     this.feedbackForm,
-    this.registrationDeadLine,
+    required this.registrationDeadLine,
   });
 }
 
 List<Program> globalPrograms = [
   Program(
-    title: 'The Ultimate Bootcamp',
+    title: 'The Xlerate Bootcamp',
     description:
         'An intensive, hybrid 5-day bootcamp where you will learn advanced product building. Complete this course to unlock every single reward available in the Xlerate ecosystem!',
     host: 'Excelerate',

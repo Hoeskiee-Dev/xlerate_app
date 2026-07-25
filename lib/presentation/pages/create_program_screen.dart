@@ -47,7 +47,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
   TimeOfDay? _selectedTime;
-  DateTime? _deadlineDate;
+  DateTime? _registrationDeadLine;
 
   // Event Tags
   final List<String> _selectedTags = [];
@@ -81,8 +81,9 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
     if (picked != null) {
       setState(() {
         _startDate = picked;
-        if (_deadlineDate != null && _deadlineDate!.isAfter(_startDate!)) {
-          _deadlineDate = null;
+        if (_registrationDeadLine != null &&
+            _registrationDeadLine!.isAfter(_startDate!)) {
+          _registrationDeadLine = null;
         }
         if (_endDate != null && _endDate!.isBefore(_startDate!)) {
           _endDate = null;
@@ -118,7 +119,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       firstDate: DateTime.now(),
       lastDate: _startDate!,
     );
-    if (picked != null) setState(() => _deadlineDate = picked);
+    if (picked != null) setState(() => _registrationDeadLine = picked);
   }
 
   Future<void> _selectTime(BuildContext context) async {
@@ -542,7 +543,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                         flex: 1,
                         child: _buildInteractiveField(
                           label: 'Register Deadline *',
-                          text: _formatDate(_deadlineDate),
+                          text: _formatDate(_registrationDeadLine),
                           icon: Icons.event_busy,
                           onTap: () => _selectDeadline(context),
                         ),
@@ -616,7 +617,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
     }
 
     if (_startDate == null ||
-        _deadlineDate == null ||
+        _registrationDeadLine == null ||
         _selectedTime == null ||
         (_isMultiDay && _endDate == null)) {
       _showErrorSnackBar('Please ensure all Dates and Times are selected.');
@@ -632,6 +633,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       startDate: _formatDate(_startDate),
       endDate: _isMultiDay ? _formatDate(_endDate) : null,
       time: _selectedTime!.format(context),
+      registrationDeadLine: _formatDate(_registrationDeadLine),
       locationType: _locationType,
       location: _locationController.text.trim(),
       tag: _selectedTags.isNotEmpty ? _selectedTags.join(', ') : 'Misc',
