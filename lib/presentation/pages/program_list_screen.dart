@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/presentation/pages/program/program_detail_page.dart';
 import '../../data/program_data.dart';
-import 'create_program_screen.dart';
 import '../pages/program/program_detail_page.dart';
+import 'create_program_screen.dart';
 
+/// [ProgramListScreen]
+/// The primary discovery screen for users to browse, search, and filter available programs.
+/// Built with responsive layouts to prevent layout overflows across different screen sizes.
 class ProgramListScreen extends StatefulWidget {
   final bool isAdmin;
 
   const ProgramListScreen({
     super.key,
-    this.isAdmin = true,
-  }); // Default to true for testing
+    this.isAdmin = true, // Defaults to true for testing and Admin views
+  });
 
   @override
   State<ProgramListScreen> createState() => _ProgramListScreenState();
@@ -18,17 +20,31 @@ class ProgramListScreen extends StatefulWidget {
 
 class _ProgramListScreenState extends State<ProgramListScreen>
     with SingleTickerProviderStateMixin {
+  // 1. STATE VARIABLES
+
+  /// Holds programs matching current filters/search to drive the ListView
   List<Program> _filteredPrograms = [];
+
+  /// Current string entered in the search bar
   String _searchKeyword = '';
+
+  /// Currently active category filter chip (Defaults to 'All')
   String _selectedCategory = 'All';
 
-  // Excelerate Brand Gradient (Orange to Magenta)
+  // 2. BRAND DESIGN TOKENS
+
+  /// Primary Brand Gradient: Red on the left sweeping to Orange on the right.
+  /// Used for outlines, active states, and primary title text.
   final LinearGradient _brandGradient = const LinearGradient(
-    colors: [Color(0xFFFF6B35), Color(0xFFE91E63)], // Orange to Pink/Magenta
+    colors: [
+      Colors.redAccent, // Start color (Left)
+      Colors.orangeAccent, // End color (Right)
+    ],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
+  /// Available categories for filtering programs horizontally
   final List<String> _categories = [
     'All',
     'Tech',
@@ -43,35 +59,51 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     'Misc',
   ];
 
+  // 3. CONTROLLERS
+
+  /// Drives the staggered upward-slide entrance animation for the program list
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
+    // Initialize animation controller with a smooth 800ms duration
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
+
+    // Populate the initial program list and trigger first animation
     _applyFilters();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController
+        .dispose(); // Prevent memory leaks when screen is closed
     super.dispose();
   }
 
+  // 4. LOGIC
+
+  /// Filters [globalPrograms] based on the search keyword and selected category tag.
+  /// Refreshes the UI and triggers the list view animation upon completion.
   void _applyFilters() {
     setState(() {
       _filteredPrograms = globalPrograms.where((program) {
+        // 1. Match title against keyword search (Case Insensitive)
         final matchesKeyword = program.title.toLowerCase().contains(
           _searchKeyword.toLowerCase(),
         );
+
+        // 2. Parse comma-separated program tags safely
         final programTags = program.tag
             .toLowerCase()
             .split(',')
             .map((e) => e.trim())
             .toList();
+
+        // 3. Check if program belongs to selected category
         final matchesCategory =
             _selectedCategory == 'All' ||
             programTags.contains(_selectedCategory.toLowerCase());
@@ -80,18 +112,23 @@ class _ProgramListScreenState extends State<ProgramListScreen>
       }).toList();
     });
 
+    // Reset and replay staggered entrance animation to reflect new list state
     _animationController.reset();
     _animationController.forward();
   }
 
+  // 5. MAIN BUILDER
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFBFB), // Very clean, light background
+      backgroundColor: const Color(
+        0xFFFBFBFB,
+      ), // Clean, light background surface
       appBar: AppBar(
         backgroundColor: const Color(0xFFFBFBFB),
         elevation: 0,
-
+        // Gradient-masked title text matching brand colors
         title: ShaderMask(
           shaderCallback: (bounds) => _brandGradient.createShader(bounds),
           child: const Text(
@@ -99,22 +136,28 @@ class _ProgramListScreenState extends State<ProgramListScreen>
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: 26,
             ),
           ),
         ),
         centerTitle: true,
         actions: [
+          // Admin-only action button to create new programs
           if (widget.isAdmin)
             IconButton(
-              icon: const Icon(Icons.add_circle_outline, color: Colors.black87),
+              icon: const Icon(
+                Icons.add_circle_outline,
+                color: Colors.deepOrangeAccent,
+              ),
               onPressed: () async {
+                // Wait for the creation screen to pop back
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const CreateProgramScreen(),
                   ),
                 );
+                // Refresh list if a new program was successfully created
                 if (result == true) {
                   _applyFilters();
                 }
@@ -129,7 +172,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
           children: [
             const SizedBox(height: 10),
 
-            // Animated Search Bar
+            // --- SEARCH BAR SECTION ---
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
@@ -144,7 +187,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
               child: TextField(
                 onChanged: (value) {
                   _searchKeyword = value;
-                  _applyFilters();
+                  _applyFilters(); // Real-time filtering on input change
                 },
                 style: const TextStyle(fontSize: 16),
                 decoration: InputDecoration(
@@ -156,7 +199,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
                   prefixIcon: const Icon(
                     Icons.search,
                     color: Color(0xFFFF6B35),
-                  ), // Brand Orange
+                  ),
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 16,
                     horizontal: 16,
@@ -172,13 +215,14 @@ class _ProgramListScreenState extends State<ProgramListScreen>
                     borderSide: const BorderSide(
                       color: Color(0xFFE91E63),
                       width: 1.5,
-                    ), // Brand Pink
+                    ),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 20),
 
+            // --- HORIZONTAL CATEGORY FILTER CHIPS ---
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
@@ -190,6 +234,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
             ),
             const SizedBox(height: 24),
 
+            // --- SECTION HEADER ---
             const Text(
               'Find any programs you like',
               style: TextStyle(
@@ -201,37 +246,28 @@ class _ProgramListScreenState extends State<ProgramListScreen>
             ),
             const SizedBox(height: 16),
 
+            // --- MAIN PROGRAM LISTVIEW ---
             Expanded(
               child: globalPrograms.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.event_busy,
-                            size: 60,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            widget.isAdmin
-                                ? 'No programs found.\nClick the "+" icon to add one.'
-                                : 'No programs available right now.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
+                  // State 1: Entire Database is Empty
+                  ? _buildEmptyState(
+                      icon: Icons.event_busy,
+                      message: widget.isAdmin
+                          ? 'No programs found.\nClick the "+" icon to add one.'
+                          : 'No programs available right now.',
                     )
-                  : _filteredPrograms.isNotEmpty
-                  ? ListView.builder(
+                  : _filteredPrograms.isEmpty
+                  // State 2: Active Search/Filter yields zero results
+                  ? _buildEmptyState(
+                      icon: Icons.search_off,
+                      message: 'No programs match your search.',
+                    )
+                  // State 3: Render Data with Animations
+                  : ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       itemCount: _filteredPrograms.length,
                       itemBuilder: (context, index) {
-                        // Staggered Animation Logic
+                        // Calculates a staggered entrance animation curve per list item
                         final Animation<double> animation =
                             Tween<double>(begin: 0.0, end: 1.0).animate(
                               CurvedAnimation(
@@ -248,6 +284,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
                           animation: animation,
                           builder: (context, child) {
                             return Transform.translate(
+                              // Slides up from 50px below
                               offset: Offset(0, 50 * (1 - animation.value)),
                               child: Opacity(
                                 opacity: animation.value,
@@ -258,15 +295,6 @@ class _ProgramListScreenState extends State<ProgramListScreen>
                           child: _buildProgramCard(_filteredPrograms[index]),
                         );
                       },
-                    )
-                  : Center(
-                      child: Text(
-                        'No programs match your search.',
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 16,
-                        ),
-                      ),
                     ),
             ),
           ],
@@ -275,6 +303,30 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     );
   }
 
+  // 6. UI HELPER COMPONENTS
+
+  /// Reusable empty state UI for missing data or zero search results
+  Widget _buildEmptyState({required IconData icon, required String message}) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 60, color: Colors.grey.shade300),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Interactive category filter pill that animates when selected.
   Widget _buildAnimatedFilterChip(String label) {
     final isSelected = _selectedCategory == label;
 
@@ -291,7 +343,6 @@ class _ProgramListScreenState extends State<ProgramListScreen>
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          // Applies gradient if selected, white if not
           gradient: isSelected ? _brandGradient : null,
           color: isSelected ? null : Colors.white,
           borderRadius: BorderRadius.circular(25),
@@ -326,31 +377,26 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     );
   }
 
+  /// Maps program location types ('Virtual', 'Hybrid', 'Physical') to UI icons.
   IconData _getLocationIcon(String type) {
     if (type == 'Virtual') return Icons.videocam_outlined;
     if (type == 'Hybrid') return Icons.devices_outlined;
     return Icons.location_on_outlined;
   }
 
+  /// Constructs the primary Program Card layout.
   Widget _buildProgramCard(Program program) {
-    final dateText = program.endDate != null
-        ? '${program.startDate} - ${program.endDate}'
-        : '${program.startDate} at ${program.time}';
-
-    //Live Spots Left Calculation
+    // --- PRE-CALCULATE LIVE SPOTS ---
     int? total = program.totalSeats;
     int joined = program.joinedCount;
-
     Color spotsColor;
     String spotsText;
 
     if (total == null) {
-      // Unlimited spots
       spotsColor = Colors.green.shade600;
       spotsText = 'No Limit';
     } else {
       int spotsLeft = total - joined;
-
       if (spotsLeft <= 0) {
         spotsColor = Colors.grey.shade500;
         spotsText = 'No Spots Left';
@@ -358,15 +404,38 @@ class _ProgramListScreenState extends State<ProgramListScreen>
         spotsText = '$spotsLeft Spots Left';
         double percentage = spotsLeft / total;
 
+        // Dynamically style based on urgency (filling up)
         if (percentage >= 0.5) {
-          spotsColor = Colors.green.shade600;
+          spotsColor = Colors.green.shade600; // Plenty of room
         } else if (percentage >= 0.25) {
-          spotsColor = Colors.amber.shade700;
+          spotsColor = Colors.amber.shade700; // Filling up
         } else {
-          spotsColor = Colors.red.shade600;
+          spotsColor = Colors.red.shade600; // Almost full
         }
       }
     }
+
+    // --- PRE-CALCULATE DEADLINE SAFETY ---
+    // Guarantees we never pass a null value to the Text widget
+    final String deadlineText =
+        (program.registrationDeadLine == null ||
+            program.registrationDeadLine.toString().trim().isEmpty)
+        ? 'TBA'
+        : program.registrationDeadLine.toString();
+
+    // Multi-color used for XP icon
+    const LinearGradient rgbGradient = LinearGradient(
+      colors: [Colors.redAccent, Colors.orangeAccent, Colors.redAccent],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+
+    // Light two-tone gradient for premium reward outlines
+    const LinearGradient lightBrandGradient = LinearGradient(
+      colors: [Colors.blueAccent, Colors.lightGreenAccent],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
 
     return GestureDetector(
       onTap: () {
@@ -382,453 +451,363 @@ class _ProgramListScreenState extends State<ProgramListScreen>
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: _brandGradient,
+          gradient: _brandGradient, //
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
-        padding: const EdgeInsets.all(2.5),
+        padding: const EdgeInsets.all(2.5), // Inner gap to create the border
         child: Container(
-          height: 111, // Locked height
           decoration: BoxDecoration(
-            color: Colors.white,
+            // Premium Pastel Gradient Background
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFFFF3E8), // Distinct Soft Peach
+                Colors.white, // Clean White center for text readability
+                Color(0xFFFBE4EE), // Distinct Soft Pink
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.4, 1.0],
+            ),
             borderRadius: BorderRadius.circular(14.5),
           ),
           clipBehavior: Clip.hardEdge,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 5.0,
-              top: 5.0,
-              right: 5.0,
-              bottom: 5.0,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 25,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: program.imageFile != null
-                              ? Image.file(
-                                  program.imageFile!,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.network(
-                                  program.imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                        Icons.image,
-                                        color: Colors.grey,
-                                        size: 25,
-                                      ),
-                                ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: 70,
-                        height: 16,
-                        child: Container(
-                          padding: const EdgeInsets.all(
-                            1.6,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            gradient: const LinearGradient(
-                              colors: [
-                                Colors.redAccent,
-                                Colors.green,
-                                Colors.blueAccent,
-                              ], // RGB Colors!
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 2,
-                              vertical: 0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(
-                                4,
-                              ),
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: ShaderMask(
-                                shaderCallback: (bounds) =>
-                                    _brandGradient.createShader(bounds),
-                                child: Text(
-                                  program.host,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // CARD LEFT: THUMBNAIL IMAGE
+              Container(
+                width: 85,
+                height: 85,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-
-                const SizedBox(width: 6),
-
-                Opacity(
-                  opacity: 0.016,
-                  child: Container(
-                    width: 1.6,
-                    decoration: BoxDecoration(gradient: _brandGradient),
-                  ),
-                ),
-
-                const SizedBox(width: 0),
-
-                // --- MIDDLE SIDE: Title, Logistics, Spots ---
-                Expanded(
-                  flex: 65,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ShaderMask(
-                        shaderCallback: (bounds) =>
-                            _brandGradient.createShader(bounds),
-                        child: Text(
-                          program.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 19,
-                            color: Colors.white,
-                            height: 1.16,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  // Render local file if it exists, otherwise pull from Network URL
+                  child: program.imageFile != null
+                      ? Image.file(
+                          program.imageFile!,
+                          fit: BoxFit.cover,
+                          cacheWidth: 250, // Optimize memory
+                        )
+                      : Image.network(
+                          program.imageUrl,
+                          fit: BoxFit.cover,
+                          cacheWidth: 250, // Optimize memory
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                                Icons.image,
+                                color: Colors.grey,
+                                size: 25,
+                              ),
                         ),
-                      ),
+                ),
+              ),
+              const SizedBox(width: 12),
 
-                      const SizedBox(height: 4),
-
-                      SizedBox(
-                        height: 24,
-                        child:
-                            program.speaker != null &&
-                                program.speaker!.isNotEmpty
-                            ? Row(
-                                children: [
-                                  const Text(
-                                    '🧑‍💼',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      program.speaker!,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade800,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : const SizedBox.shrink(),
-                      ),
-
-                      const SizedBox(height: 6),
-
-                      Row(
-                        children: [
-                          Icon(
-                            _getLocationIcon(program.locationType),
-                            size: 13,
-                            color: const Color(0xFFFF6B35),
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            program.locationType,
-                            style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            '•',
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 11,
-                            ),
-                          ),
-                          const SizedBox(width: 3),
-                          Icon(
-                            Icons.calendar_month_rounded,
-                            size: 13,
-                            color: Colors.grey.shade700,
-                          ),
-                          const SizedBox(width: 3),
-                          Expanded(
+              // CARD RIGHT: RESPONSIVE CONTENT BLOCK
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // --- Header Row: Title & Fee Container ---
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title masked with Brand Gradient
+                        Expanded(
+                          child: ShaderMask(
+                            shaderCallback: (bounds) =>
+                                _brandGradient.createShader(bounds),
                             child: Text(
-                              dateText,
-                              style: TextStyle(
-                                color: Colors.grey.shade800,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
+                              program.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 13,
+                                color: Colors.white,
+                                height: 1.2,
                               ),
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 10),
 
-                      const SizedBox(
-                        height: 4,
-                      ),
-
-                      // --- Live Spots & Deadline Row ---
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (program.registrationDeadLine != null &&
-                              program.registrationDeadLine!.isNotEmpty)
-                            Text(
-                              'Application Deadline: ${program.registrationDeadLine}',
+                        // Fee Tag (Only render if free or fee > 0)
+                        if (program.isFree || program.fee > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: program.isFree
+                                  ? Colors.green.shade50
+                                  : Colors.amber.shade50,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: program.isFree
+                                    ? Colors.green.shade300
+                                    : Colors.amber.shade300,
+                              ),
+                            ),
+                            child: Text(
+                              program.isFree
+                                  ? 'FREE'
+                                  : '\$${program.fee.toStringAsFixed(0)}',
                               style: TextStyle(
-                                color: Colors.red.shade500,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.italic,
+                                color: program.isFree
+                                    ? Colors.green.shade800
+                                    : Colors.amber.shade900,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
-
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.local_activity_outlined,
-                                size: 12,
-                                color: spotsColor,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                spotsText,
-                                style: TextStyle(
-                                  color: spotsColor,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
                           ),
-                        ],
+                      ],
+                    ),
+
+                    // --- Speaker Data Row ---
+                    if (program.speaker != null && program.speaker!.isNotEmpty)
+                      Text(
+                        '🧑‍💼 ${program.speaker}',
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ),
 
-                const SizedBox(width: 0),
+                    const SizedBox(height: 2),
 
-                Opacity(
-                  opacity: 0.016,
-                  child: Container(
-                    width: 1.6,
-                    decoration: BoxDecoration(gradient: _brandGradient),
-                  ),
-                ),
-
-                const SizedBox(width: 6),
-
-                // --- RIGHT SIDE: Fee & Rewards ---
-                Expanded(
-                  flex: 10,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 2.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    // --- Middle Row: Application Deadline & Live Spots ---
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 18,
-                          child: Center(
-                            child: program.isFree || program.fee > 0
-                                ? Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                      vertical: 1,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: program.isFree
-                                          ? Colors.green.shade50
-                                          : Colors.amber.shade50,
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(
-                                        color: program.isFree
-                                            ? Colors.green.shade300
-                                            : Colors.amber.shade300,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      program.isFree
-                                          ? 'FREE'
-                                          : '\$${program.fee.toStringAsFixed(0)}',
-                                      style: TextStyle(
-                                        color: program.isFree
-                                            ? Colors.green.shade800
-                                            : Colors.amber.shade900,
-                                        fontSize: 8.5,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
+                        // Left: Bulletproof Deadline
+                        Expanded(
+                          child: Text(
+                            'Application Deadline: $deadlineText',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: 8),
 
-                        const SizedBox(height: 4),
-
-                        SizedBox(
-                          height: 46,
-                          child: Center(
-                            child: SizedBox(
-                              width: 36,
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: 2,
-                                runSpacing: 2,
-                                children: [
-                                  if (program.offersCertificate)
-                                    _buildPremiumIcon(
-                                      Icons.workspace_premium,
-                                      const Color(0xFFD4AF37),
-                                    ),
-                                  if (program.offersBadge)
-                                    _buildPremiumIcon(
-                                      Icons.shield,
-                                      const Color(0xFF4169E1),
-                                    ),
-                                  if (program.offersMicroScholarships)
-                                    _buildPremiumIcon(
-                                      Icons.school,
-                                      Colors.teal,
-                                    ),
-                                  if (program.offersLetterOfRecommendation)
-                                    _buildPremiumIcon(
-                                      Icons.edit_document,
-                                      Colors.indigo,
-                                    ),
-                                  if (program.offersPhysicalSwags)
-                                    _buildPremiumIcon(
-                                      Icons.redeem,
-                                      Colors.redAccent,
-                                    ),
-                                ],
+                        // Right: Dynamic Spot Count Indicator
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.local_activity_outlined,
+                              size: 12,
+                              color: spotsColor,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              spotsText,
+                              style: TextStyle(
+                                color: spotsColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                          ),
+                          ],
                         ),
+                      ],
+                    ),
 
-                        const SizedBox(height: 4),
+                    const SizedBox(height: 3),
 
-                        // XP Amount Slot
-                        SizedBox(
-                          height: 16,
-                          child: Center(
-                            child:
-                                program.offersXleratePoints &&
-                                    program.xpAmount != null
-                                ? Container(
-                                    padding: const EdgeInsets.all(
-                                      1.6,
+                    // --- Bottom Row: Rewards & Host ---
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Left: Wrapping container for dynamic Rewards
+                        Expanded(
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 5,
+                            runSpacing: 4,
+                            children: [
+                              if (program.offersCertificate)
+                                _buildPremiumIcon(
+                                  Icons.workspace_premium,
+                                  const Color(0xFFD4AF37),
+                                  lightBrandGradient,
+                                ),
+                              if (program.offersBadge)
+                                _buildPremiumIcon(
+                                  Icons.shield,
+                                  const Color(0xFF4169E1),
+                                  lightBrandGradient,
+                                ),
+                              if (program.offersMicroScholarships)
+                                _buildPremiumIcon(
+                                  Icons.school,
+                                  Colors.teal,
+                                  lightBrandGradient,
+                                ),
+                              if (program.offersLetterOfRecommendation)
+                                _buildPremiumIcon(
+                                  Icons.edit_document,
+                                  Colors.indigo,
+                                  lightBrandGradient,
+                                ),
+                              if (program.offersPhysicalSwags)
+                                _buildPremiumIcon(
+                                  Icons.redeem,
+                                  Colors.redAccent,
+                                  lightBrandGradient,
+                                ),
+
+                              // Custom XP Graphic Badge
+                              if (program.offersXleratePoints)
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  padding: const EdgeInsets.all(1.5),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: lightBrandGradient,
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
                                     ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Colors.redAccent,
-                                          Colors.green,
-                                          Colors.blueAccent,
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 1.6,
-                                        vertical: 1.6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                          4,
-                                        ),
-                                      ),
+                                    child: Center(
                                       child: ShaderMask(
                                         shaderCallback: (bounds) =>
-                                            _brandGradient.createShader(bounds),
-                                        child: Text(
-                                          '${program.xpAmount} XP',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 7.5,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
+                                            rgbGradient.createShader(bounds),
+                                        child: const Text(
+                                          'XP',
                                           textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 8.5,
+                                            fontWeight: FontWeight.w900,
+                                            height: 1.0,
+
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.white,
+                                                offset: Offset(0.2, 0.2),
+                                              ),
+                                              Shadow(
+                                                color: Colors.white,
+                                                offset: Offset(-0.2, -0.2),
+                                              ),
+                                              Shadow(
+                                                color: Colors.white,
+                                                offset: Offset(0.2, -0.2),
+                                              ),
+                                              Shadow(
+                                                color: Colors.white,
+                                                offset: Offset(-0.2, 0.2),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  )
-                                : const SizedBox.shrink(),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+
+                        // Right: Host Text (Custom Orange-to-Red Masked Gradient)
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [
+                              Colors.orangeAccent, // Left color
+                              Colors.redAccent, // Right color
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ).createShader(bounds),
+                          child: Text(
+                            program.host.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color: Colors
+                                  .white, // Must remain white to absorb gradient mask
+                              height: 1.0,
+                              letterSpacing: 0.5,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
                           ),
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  // Helper widget for the tinted icons
-  Widget _buildPremiumIcon(IconData icon, Color color) {
+  /// Helper widget that creates a uniform circular badge with an outline gradient.
+
+  Widget _buildPremiumIcon(
+    IconData icon,
+    Color color,
+    LinearGradient outlineGradient,
+  ) {
     return Container(
-      padding: const EdgeInsets.all(2),
+      width: 20,
+      height: 20,
+      padding: const EdgeInsets.all(1.5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
         shape: BoxShape.circle,
+        gradient: outlineGradient, // Premium dual-tone edge
       ),
-      child: Icon(icon, size: 10, color: color),
+      child: Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white, // White core to maintain icon visibility
+        ),
+        child: Icon(
+          icon,
+          size: 11, // Properly scaled internal Icon
+          color: color,
+        ),
+      ),
     );
   }
 }
