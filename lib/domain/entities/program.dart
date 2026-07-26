@@ -27,7 +27,7 @@ abstract class Program with _$Program {
     required bool offersCertificate,
     required bool offersBadge,
     required bool offersMicroScholarships,
-    required bool offersLetterOfRecommendatiom,
+    required bool offersLetterOfRecommendation,
     required bool offersPhysicalSwags,
     required bool offersXleratePoints,
     int? xpAmount,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/data/program_data.dart';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:xlerate/domain/entities/question_type.dart';
+import 'package:xlerate/domain/entities/saved_feedback_form.dart';
+import 'package:xlerate/domain/entities/saved_question.dart';
 
 class FeedbackPage extends StatefulWidget {
   final SavedFeedbackForm form;
@@ -179,7 +182,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           tween: Tween<double>(begin: 0, end: 1),
                           // Stagger the animation based on index
                           duration: Duration(
-                            milliseconds: 400 + (entry.key * 150),
+                            milliseconds: 400 + (entry.key) * 150,
                           ),
                           curve: Curves.easeOutCubic,
                           builder: (context, value, child) {
