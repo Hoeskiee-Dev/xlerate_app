@@ -3,6 +3,6 @@ import 'package:xlerate/domain/entities/program.dart';
 
 abstract interface class ProgramsRepository {
   Future<Result<List<Program>>> getAllPrograms();
-  Future<Result<Program>> getProgramDetails();
-  Future<Result<void>> addProgram();
+  Future<Result<Program>> getProgramDetails({required String id});
+  Future<Result<void>> addProgram({required Program program});
 }
