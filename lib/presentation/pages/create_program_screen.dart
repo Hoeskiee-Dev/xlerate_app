@@ -20,7 +20,6 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   final TextEditingController _speakerController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _seatsController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _eligibilityController = TextEditingController();
   final TextEditingController _feeController = TextEditingController();
@@ -346,7 +345,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                         child: _buildValidatedInputField(
                           label: 'Available Seats',
                           hint: 'Empty means ∞',
-                          controller: _seatsController,
+                          controller: _totalSeatsController,
                           isNumber: true,
                         ),
                       ),

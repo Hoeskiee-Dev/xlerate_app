@@ -384,6 +384,39 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     return Icons.location_on_outlined;
   }
 
+  // --- Deadline Date Formatter  ---
+  String _formatDeadline(String? date) {
+    if (date == null || date.isEmpty) return '';
+
+    try {
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+
+      // Slash format saved by CreateProgramScreen (e.g., "26/07/26")
+      final parts = date.split('/');
+      if (parts.length >= 2) {
+        int day = int.parse(parts[0]);
+        int month = int.parse(parts[1]);
+        if (month >= 1 && month <= 12) {
+          return '${months[month - 1]} $day';
+        }
+      }
+    } catch (e) {}
+    return date;
+  }
+
   /// Constructs the primary Program Card layout.
   Widget _buildProgramCard(Program program) {
     // --- PRE-CALCULATE LIVE SPOTS ---
@@ -392,7 +425,7 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     Color spotsColor;
     String spotsText;
 
-    if (total == null) {
+    if (total == null || total <= 0) {
       spotsColor = Colors.green.shade600;
       spotsText = 'No Limit';
     } else {
@@ -607,7 +640,8 @@ class _ProgramListScreenState extends State<ProgramListScreen>
                         // Left: Bulletproof Deadline
                         Expanded(
                           child: Text(
-                            'Application Deadline: $deadlineText',
+                            'Entry Deadline: ${_formatDeadline(program.registrationDeadLine)}',
+                            textAlign: TextAlign.left,
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 10,
