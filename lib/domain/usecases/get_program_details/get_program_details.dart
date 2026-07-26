@@ -3,18 +3,18 @@ import 'package:xlerate/core/usecase.dart';
 import 'package:xlerate/data/repositories/programs_repository.dart';
 import 'package:xlerate/domain/entities/program.dart';
 
-class GetAllPrograms implements UseCase<Result<List<Program>>, void> {
+class GetProgramDetails implements UseCase<Result<Program>, String> {
   final ProgramsRepository _programsRepository;
 
-  GetAllPrograms({required ProgramsRepository programsRepository})
+  GetProgramDetails({required ProgramsRepository programsRepository})
     : _programsRepository = programsRepository;
 
   @override
-  Future<Result<List<Program>>> call(void params) async {
-    final result = await _programsRepository.getAllPrograms();
+  Future<Result<Program>> call(String params) async {
+    final result = await _programsRepository.getProgramDetails(id: params);
 
     return switch (result) {
-      Success(value: final programs) => Result.success(programs),
+      Success(value: final program) => Result.success(program),
       Failed(:final message) => Result.failed(message),
     };
   }
