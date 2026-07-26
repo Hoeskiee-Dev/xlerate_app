@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
-import 'package:xlerate/data/program_data.dart';
 
 Widget eventHeader(BuildContext context, Program program) => Stack(
   children: [

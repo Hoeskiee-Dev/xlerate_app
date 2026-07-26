@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/presentation/pages/feedback_page.dart';
 import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
 import 'package:xlerate/presentation/pages/login_page.dart';
-import 'package:xlerate/presentation/pages/program/program_detail_page.dart';
-import 'package:xlerate/presentation/pages/program_list_screen.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
+import 'package:xlerate/presentation/pages/program/program_list/program_list_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
