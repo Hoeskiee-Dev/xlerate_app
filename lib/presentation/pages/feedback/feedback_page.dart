@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/data/program_data.dart';
+import 'package:xlerate/domain/entities/question_type.dart';
+import 'package:xlerate/domain/entities/saved_feedback_form.dart';
+import 'package:xlerate/domain/entities/saved_question.dart';
 import 'widgets/feedback_header_widget.dart';
 import 'widgets/question_card_widget.dart';
 import 'widgets/feedback_submit_button.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/data/program_data.dart';
+import 'package:xlerate/domain/entities/question_type.dart';
 
 class TextInput extends StatelessWidget {
   final QuestionType questionType;
