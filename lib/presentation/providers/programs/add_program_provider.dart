@@ -19,6 +19,8 @@ class AddProgram extends _$AddProgram {
     final createProgramUsecase = ref.read(createProgramProvider);
     final result = await createProgramUsecase(params);
 
+    if (!ref.mounted) return null;
+
     switch (result) {
       case Success(value: _):
         state = const AsyncData(null);

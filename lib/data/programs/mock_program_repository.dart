@@ -13,7 +13,7 @@ class MockProgramRepository implements ProgramsRepository {
   @override
   Future<Result<void>> addProgram({required Program program}) async {
     try {
-      await _dio!.post('$_baseURL/programs', data: program);
+      await _dio!.post('$_baseURL/programs', data: program.toJson());
 
       return Result.success(null);
     } on DioException catch (e) {
