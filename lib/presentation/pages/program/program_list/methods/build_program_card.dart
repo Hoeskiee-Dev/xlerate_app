@@ -104,7 +104,7 @@ Widget buildProgramCard(BuildContext context, Program program) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProgramDetailPage(program: program),
+          builder: (context) => ProgramDetailPage(programId: program.id!),
         ),
       );
     },

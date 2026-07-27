@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:xlerate/domain/usecases/get_all_programs/get_all_programs.dart';
-import 'package:xlerate/presentation/providers/repositories/program_repository.dart/program_repository.dart';
+import 'package:xlerate/presentation/providers/repositories/program_repository/program_repository.dart';
 
 part 'get_all_programs.g.dart';
 

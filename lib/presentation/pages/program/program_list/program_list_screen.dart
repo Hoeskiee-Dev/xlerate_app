@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/core/error_helper.dart';
 import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/pages/program/program_list/methods/build_empty_state.dart';
 import 'package:xlerate/presentation/pages/program/program_list/methods/build_program_card.dart';
@@ -329,7 +330,7 @@ class _ProgramListScreenState extends ConsumerState<ProgramListScreen>
                       const SizedBox(height: 80),
                       buildEmptyState(
                         icon: Icons.error_outline,
-                        message: 'Failed to load programs.\n$error',
+                        message: getReadableErrorMessage(error),
                       ),
                     ],
                   ),

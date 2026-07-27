@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/core/error_helper.dart';
 import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
@@ -48,9 +49,24 @@ Widget programList(
         error: (error, stack) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Center(
-            child: Text(
-              "Failed to load programs",
-              style: TextStyle(color: Colors.red.shade400),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.wifi_off_rounded,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  getReadableErrorMessage(error),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.red.shade400,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -64,7 +80,7 @@ Widget programCard(BuildContext context, Program program) => GestureDetector(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProgramDetailPage(program: program),
+        builder: (context) => ProgramDetailPage(programId: program.id!),
       ),
     );
   },
