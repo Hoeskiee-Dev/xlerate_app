@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/core/error_helper.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/apply_button.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/attendies.dart';
@@ -60,18 +61,28 @@ class ProgramDetailPage extends ConsumerWidget {
           child: CircularProgressIndicator(),
         ),
 
-        error: (error, stackTrace) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Failed to load program: $error'),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () =>
-                    ref.refresh(programDetailProvider(id: programId)),
-                child: const Text('Retry'),
-              ),
-            ],
+        error: (error, stack) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.wifi_off_rounded,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  getReadableErrorMessage(error),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.red.shade400,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
