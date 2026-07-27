@@ -19,6 +19,7 @@ Xlerate bridges the gap between event discovery (workshops & programs) and perso
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Project Status](#project-status)
+- [CHANGELOGS](#changelogs)
 
 ---
 
@@ -195,3 +196,13 @@ flutter run
 Completed so far: app brief, user personas, learner & admin journeys, user flow diagrams, and initial low-fidelity navigation wireframes. Next up: high-fidelity UI, Flutter screen implementation, and backend integration.
 
 ---
+
+## Changelogs
+
+CHANGELOGS :
+-	Fetch data from API (mockAPI) (Program List, Program Details)
+-	Form Validation for Login, create program
+-	Create new program, Form submit for create program (POST method into API)
+-	Fix UI, Simplify UI, use Separation of Concern, add Riverpod State Management.
+-	Other minor fix (all changes can be seen on github commit)
+
