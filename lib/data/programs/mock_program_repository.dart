@@ -24,6 +24,8 @@ class MockProgramRepository implements ProgramsRepository {
       }
 
       return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error : $e");
     }
   }
 
