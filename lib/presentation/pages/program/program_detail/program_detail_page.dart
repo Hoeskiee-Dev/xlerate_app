@@ -7,7 +7,7 @@ import 'package:xlerate/presentation/pages/program/program_detail/methods/event_
 import 'package:xlerate/presentation/pages/program/program_detail/methods/event_title.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/feedback_button.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/description_section.dart';
-import 'package:xlerate/presentation/pages/feedback_page.dart';
+import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
 
 class ProgramDetailPage extends StatelessWidget {
   final Program program;
