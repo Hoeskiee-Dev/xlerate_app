@@ -10,6 +10,7 @@ part 'program.g.dart';
 abstract class Program with _$Program {
   @JsonSerializable(explicitToJson: true)
   const factory Program({
+    String? id,
     required String title,
     required String description,
     required String host,
