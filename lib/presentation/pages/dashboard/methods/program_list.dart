@@ -64,7 +64,7 @@ Widget programCard(BuildContext context, Program program) => GestureDetector(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProgramDetailPage(program: program),
+        builder: (context) => ProgramDetailPage(programId: program.id!),
       ),
     );
   },

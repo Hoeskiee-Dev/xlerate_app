@@ -33,7 +33,7 @@ final class AddProgramProvider
   AddProgram create() => AddProgram();
 }
 
-String _$addProgramHash() => r'e3b2ba08162c49a06670a4e887e53765e9020df1';
+String _$addProgramHash() => r'47572390975966fa972a9bf4028597fc02194d83';
 
 abstract class _$AddProgram extends $AsyncNotifier<void> {
   FutureOr<void> build();

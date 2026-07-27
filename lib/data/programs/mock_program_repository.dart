@@ -45,7 +45,7 @@ class MockProgramRepository implements ProgramsRepository {
   @override
   Future<Result<Program>> getProgramDetails({required String id}) async {
     try {
-      final response = await _dio!.get("$_baseURL/programs/:id");
+      final response = await _dio!.get("$_baseURL/programs/$id");
 
       final result = Map<String, dynamic>.from(response.data);
 

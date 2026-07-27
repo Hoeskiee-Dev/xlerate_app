@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-Container applyButton() => Container(
+Container applyButton({
+  VoidCallback? onPressed,
+  bool isLoading = false,
+}) => Container(
   padding: const EdgeInsets.all(16),
   decoration: BoxDecoration(
     color: Colors.white,
@@ -17,26 +20,35 @@ Container applyButton() => Container(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () {
-          // ! TODO : Confirmation screen feature
-        },
+        onPressed: isLoading ? null : onPressed,
+
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(
             0xFFFF6A3D,
           ),
+          disabledBackgroundColor: const Color(0xFFFF6A3D).withOpacity(0.5),
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text(
-          "Apply Now",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                "Apply Now",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     ),
   ),
