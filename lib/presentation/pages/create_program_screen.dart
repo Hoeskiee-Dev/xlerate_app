@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import '../../data/program_data.dart';
 import 'create_feedback_form_screen.dart';
 
@@ -664,7 +665,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       joinedCount: 0,
     );
 
-    globalPrograms.insert(0, newProgram);
+    // globalPrograms.insert(0, newProgram);
 
     //Show Success Snackbar
     ScaffoldMessenger.of(context).showSnackBar(

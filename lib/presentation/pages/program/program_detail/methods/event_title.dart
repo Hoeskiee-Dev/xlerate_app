@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:xlerate/presentation/pages/program/methods/event_tags.dart';
-import 'package:xlerate/data/program_data.dart';
+import 'package:xlerate/domain/entities/program.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/event_tags.dart';
 
 /* final List<String> eventLabel = [
   "Tech",

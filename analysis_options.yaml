@@ -24,6 +24,9 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+analyzer:
+  errors:
+    prefer_initializing_formals: ignore
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

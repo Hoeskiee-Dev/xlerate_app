@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
-import 'package:xlerate/presentation/pages/program/methods/details_content.dart';
-import 'package:xlerate/presentation/pages/program/methods/eligibility_content.dart';
-import 'package:xlerate/presentation/pages/program/methods/rewards_content.dart';
-import 'package:xlerate/data/program_data.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/details_content.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/eligibility_content.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/rewards_content.dart';
 
 class DescriptionSection extends StatefulWidget {
   final Program program;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
-import 'package:xlerate/presentation/pages/program/methods/apply_button.dart';
-import 'package:xlerate/presentation/pages/program/methods/attendies.dart';
-import 'package:xlerate/presentation/pages/program/methods/event_header.dart';
-import 'package:xlerate/presentation/pages/program/methods/event_title.dart';
-import 'package:xlerate/presentation/pages/program/methods/feedback_button.dart';
-import 'package:xlerate/presentation/pages/program/widgets/description_section.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/apply_button.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/attendies.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/event_header.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/event_title.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/methods/feedback_button.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/widgets/description_section.dart';
 import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
-import 'package:xlerate/data/program_data.dart';
 
 class ProgramDetailPage extends StatelessWidget {
   final Program program;

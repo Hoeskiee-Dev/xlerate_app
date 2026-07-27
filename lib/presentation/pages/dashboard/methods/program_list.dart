@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/data/program_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
-import 'package:xlerate/presentation/pages/program/program_detail_page.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
 
-Widget programList(BuildContext context) => Padding(
-  padding: const EdgeInsets.only(left: 16, right: 16),
+Widget programList(
+  BuildContext context,
+  AsyncValue<List<Program>> programListData,
+) => Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -12,18 +16,44 @@ Widget programList(BuildContext context) => Padding(
         "Best Program for You",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
-
       verticalSpaces(8),
 
-      // * List of Programs
-      ListView.separated(
-        itemCount: 6,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) =>
-            programCard(context, globalPrograms[index]),
+      // * Handle AsyncValue State (Data, Loading, Error)
+      programListData.when(
+        data: (programs) {
+          if (programs.isEmpty) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(child: Text("No programs available")),
+            );
+          }
 
-        separatorBuilder: (context, index) => verticalSpaces(12),
+          return ListView.separated(
+            itemCount: programs.length > 6 ? 6 : programs.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) =>
+                programCard(context, programs[index]),
+            separatorBuilder: (context, index) => verticalSpaces(12),
+          );
+        },
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color: Colors.deepOrangeAccent,
+            ),
+          ),
+        ),
+        error: (error, stack) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: Text(
+              "Failed to load programs",
+              style: TextStyle(color: Colors.red.shade400),
+            ),
+          ),
+        ),
       ),
     ],
   ),
@@ -48,42 +78,49 @@ Widget programCard(BuildContext context, Program program) => GestureDetector(
         BoxShadow(
           color: Colors.grey.shade300,
           blurRadius: 5,
-
-          offset: Offset(4, 2),
+          offset: const Offset(4, 2),
         ),
       ],
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // * Program Image
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            'https://media.istockphoto.com/id/2198836359/photo/i-want-to-ask-a-question.jpg?s=612x612&w=0&k=20&c=pJdlDj-mRkZlDWJwf6jHd2f37EeGnzjEr1yeYPpeyhE=',
+            program.imageUrl,
             height: 100,
             width: 100,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: 100,
+              width: 100,
+              color: Colors.grey.shade200,
+              child: const Icon(Icons.image_not_supported, color: Colors.grey),
+            ),
           ),
         ),
 
         horizontalSpaces(12),
 
-        // * Program Details
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Introduction to UI/UX Design",
+                program.title,
                 maxLines: 1,
-                style: TextStyle(
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),
               ),
+              const SizedBox(height: 2),
               Text(
-                "Alex Uzbek, B.Cs.",
+                program.speaker ?? program.host,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.grey[600],
@@ -93,14 +130,20 @@ Widget programCard(BuildContext context, Program program) => GestureDetector(
               Row(
                 children: [
                   Text(
-                    "Monday, 13 July 2026",
+                    program.startDate,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 12,
                     ),
                   ),
                   const Spacer(),
-                  Text("Excelerate"),
+                  Text(
+                    program.host,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ],
