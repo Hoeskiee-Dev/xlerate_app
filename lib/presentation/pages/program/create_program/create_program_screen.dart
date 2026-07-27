@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xlerate/domain/entities/program.dart';
-import '../../data/program_data.dart';
-import 'create_feedback_form_screen.dart';
+import '../../create_feedback_form_screen.dart';
 
-class CreateProgramScreen extends StatefulWidget {
+class CreateProgramScreen extends ConsumerStatefulWidget {
   const CreateProgramScreen({super.key});
 
   @override
-  State<CreateProgramScreen> createState() => _CreateProgramScreenState();
+  ConsumerState<CreateProgramScreen> createState() =>
+      _CreateProgramScreenState();
 }
 
-class _CreateProgramScreenState extends State<CreateProgramScreen> {
+class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
