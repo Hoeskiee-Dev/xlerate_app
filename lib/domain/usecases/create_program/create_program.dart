@@ -3,10 +3,10 @@ import 'package:xlerate/core/usecase.dart';
 import 'package:xlerate/data/repositories/programs_repository.dart';
 import 'package:xlerate/domain/usecases/create_program/create_program_params.dart';
 
-class AddProgram implements UseCase<Result<void>, CreateProgramParams> {
+class CreateProgram implements UseCase<Result<void>, CreateProgramParams> {
   final ProgramsRepository _programsRepository;
 
-  AddProgram({required ProgramsRepository programsRepository})
+  CreateProgram({required ProgramsRepository programsRepository})
     : _programsRepository = programsRepository;
 
   @override
