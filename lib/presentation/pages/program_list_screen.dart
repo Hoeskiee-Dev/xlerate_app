@@ -377,13 +377,6 @@ class _ProgramListScreenState extends State<ProgramListScreen>
     );
   }
 
-  /// Maps program location types ('Virtual', 'Hybrid', 'Physical') to UI icons.
-  IconData _getLocationIcon(String type) {
-    if (type == 'Virtual') return Icons.videocam_outlined;
-    if (type == 'Hybrid') return Icons.devices_outlined;
-    return Icons.location_on_outlined;
-  }
-
   // --- Deadline Date Formatter  ---
   String _formatDeadline(String? date) {
     if (date == null || date.isEmpty) return '';
