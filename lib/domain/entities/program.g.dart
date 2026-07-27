@@ -7,6 +7,7 @@ part of 'program.dart';
 // **************************************************************************
 
 _Program _$ProgramFromJson(Map<String, dynamic> json) => _Program(
+  id: json['id'] as String?,
   title: json['title'] as String,
   description: json['description'] as String,
   host: json['host'] as String,
@@ -41,6 +42,7 @@ _Program _$ProgramFromJson(Map<String, dynamic> json) => _Program(
 );
 
 Map<String, dynamic> _$ProgramToJson(_Program instance) => <String, dynamic>{
+  'id': instance.id,
   'title': instance.title,
   'description': instance.description,
   'host': instance.host,

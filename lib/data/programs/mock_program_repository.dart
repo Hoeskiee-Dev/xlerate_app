@@ -11,9 +11,22 @@ class MockProgramRepository implements ProgramsRepository {
   final _baseURL = "https://6a6182d0da10c59c18098fc4.mockapi.io/api/v1";
 
   @override
-  Future<Result<void>> addProgram({required Program program}) {
-    // TODO: implement addProgram
-    throw UnimplementedError();
+  Future<Result<void>> addProgram({required Program program}) async {
+    try {
+      await _dio!.post('$_baseURL/programs', data: program.toJson());
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      if (e.response != null && e.response?.data != null) {
+        return Result.failed(
+          "${e.response?.data['massage'] ?? "Failed to create new program!"}",
+        );
+      }
+
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error : $e");
+    }
   }
 
   @override

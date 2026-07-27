@@ -1,19 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xlerate/domain/entities/program.dart';
-import '../../data/program_data.dart';
-import 'create_feedback_form_screen.dart';
+import 'package:xlerate/domain/usecases/create_program/create_program_params.dart';
+import 'package:xlerate/presentation/providers/programs/add_program_provider.dart';
+import '../../create_feedback_form_screen.dart';
 
-class CreateProgramScreen extends StatefulWidget {
+class CreateProgramScreen extends ConsumerStatefulWidget {
   const CreateProgramScreen({super.key});
 
   @override
-  State<CreateProgramScreen> createState() => _CreateProgramScreenState();
+  ConsumerState<CreateProgramScreen> createState() =>
+      _CreateProgramScreenState();
 }
 
-class _CreateProgramScreenState extends State<CreateProgramScreen> {
+class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = false;
 
   // Controllers
   final TextEditingController _titleController = TextEditingController();
@@ -610,7 +615,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   }
 
   // Submit Logic
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       _showErrorSnackBar('Please fill out all required fields.');
       return;
@@ -624,7 +629,6 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       return;
     }
 
-    // Program Data
     final newProgram = Program(
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
@@ -655,9 +659,8 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       extraReward: _extraRewardController.text.trim().isNotEmpty
           ? _extraRewardController.text.trim()
           : null,
-
-      // -------------------------------------
-      imageUrl: 'https://picsum.photos/200',
+      imageUrl:
+          'https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400',
       imageFile: _selectedImage,
       totalSeats: _totalSeatsController.text.trim().isEmpty
           ? null
@@ -665,33 +668,42 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       joinedCount: 0,
     );
 
-    // globalPrograms.insert(0, newProgram);
+    final params = CreateProgramParams(program: newProgram);
 
-    //Show Success Snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 10),
-            Text('Program Published Successfully!'),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    final errorMessage = await ref
+        .read(addProgramProvider.notifier)
+        .submitProgram(params: params);
 
-    // Navigate to CreateFeedbackFormScreen if selected Yes.
-    if (_createFeedback) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const CreateFeedbackFormScreen(),
+    if (!mounted) return;
+
+    if (errorMessage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white),
+              SizedBox(width: 10),
+              Text('Program Published Successfully!'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
         ),
       );
+
+      if (_createFeedback) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CreateFeedbackFormScreen(),
+          ),
+        );
+      } else {
+        Navigator.pop(context, true);
+      }
     } else {
-      Navigator.pop(context, true);
+      // Jika error, tampilkan pesan dari result Failed
+      _showErrorSnackBar('Failed to publish program: $errorMessage');
     }
   }
 
