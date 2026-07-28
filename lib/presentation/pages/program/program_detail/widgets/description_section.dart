@@ -4,6 +4,7 @@ import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/details_content.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/eligibility_content.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/rewards_content.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DescriptionSection extends StatefulWidget {
   final Program program;
