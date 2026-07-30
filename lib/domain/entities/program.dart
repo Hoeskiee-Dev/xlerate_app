@@ -15,6 +15,7 @@ abstract class Program with _$Program {
     required String description,
     required String host,
     String? speaker,
+    String? url,
     required String startDate,
     String? endDate,
     required String time,

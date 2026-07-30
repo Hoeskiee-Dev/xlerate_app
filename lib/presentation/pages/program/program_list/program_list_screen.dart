@@ -5,7 +5,7 @@ import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/pages/program/program_list/methods/build_empty_state.dart';
 import 'package:xlerate/presentation/pages/program/program_list/methods/build_program_card.dart';
 import 'package:xlerate/presentation/providers/programs/programs_list_provider.dart';
-import '../create_program/create_program_screen.dart';
+import '../program_create/create_program_screen.dart';
 
 /// [ProgramListScreen]
 /// Primary discovery screen to browse, search, and filter programs from Provider.

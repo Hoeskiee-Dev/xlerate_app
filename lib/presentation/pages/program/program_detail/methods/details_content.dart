@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/domain/entities/program.dart';
+import 'package:url_launcher/url_launcher.dart'; // 1. Added this import
 
 Widget detailsContent(Program program) {
   return Column(
@@ -78,6 +79,56 @@ Widget detailsContent(Program program) {
         program.description,
         style: const TextStyle(color: Colors.black87, height: 1.5),
       ),
+
+      // ---  NEW EVENT URL SECTION ---
+      if (program.url != null && program.url!.isNotEmpty) ...[
+        verticalSpaces(16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.link, color: Colors.blueAccent, size: 20),
+            horizontalSpaces(8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'For more info, please visit:',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  verticalSpaces(4),
+                  GestureDetector(
+                    onTap: () async {
+                      final Uri url = Uri.parse(program.url!);
+                      // Launch the URL in the device's default browser
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
+                      } else {
+                        debugPrint('Could not launch $url');
+                      }
+                    },
+                    child: Text(
+                      program.url!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.blueAccent,
+                        decoration: TextDecoration.underline,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+      // --------------------------------
     ],
   );
 }
