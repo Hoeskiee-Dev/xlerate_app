@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/presentation/pages/register_page.dart';
+import 'package:xlerate/presentation/providers/user_provider.dart';
 
-class LogoutButton extends StatelessWidget {
+/// A reusable widget that triggers a confirmation dialog before logging the user out,
+/// clearing their session state, and returning them to the authentication flow.
+class LogoutButton extends ConsumerWidget {
   const LogoutButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: () {
-          _showLogoutDialog(context);
+          // Open confirmation dialog on tap
+          _showLogoutDialog(context, ref);
         },
         icon: const Icon(
           Icons.logout,
@@ -35,7 +41,8 @@ class LogoutButton extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
+  /// Displays an alert dialog confirming user logout intent.
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
       builder: (context) {
@@ -45,16 +52,34 @@ class LogoutButton extends StatelessWidget {
             "Are you sure you want to logout?",
           ),
           actions: [
+            // Cancel button dismisses the dialog
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text("Cancel"),
             ),
+            // Confirmation logout button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               onPressed: () {
+                // 1. Clear active user profile data from Riverpod state provider
+                ref.read(userProvider.notifier).clearUser();
+
+                // 2. Dismiss the alert dialog
                 Navigator.pop(context);
 
+                // 3. Clear navigation stack and redirect user to authentication screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterPage(),
+                  ),
+                  (route) => false,
+                );
               },
               child: const Text("Logout"),
             ),
