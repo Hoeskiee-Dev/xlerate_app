@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xlerate/presentation/pages/productivity/methods/task_card.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
@@ -62,6 +63,9 @@ class _TaskListPageState extends State<TaskListPage> {
 
           // // * Tasks list
           // ...tasksList(),
+          taskCard(),
+          taskCard(),
+          taskCard(),
         ],
       ),
     );
