@@ -1,46 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/domain/entities/task.dart';
 import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/tasks_list.dart';
+import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 
-class TaskListPage extends StatefulWidget {
+class TaskListPage extends ConsumerStatefulWidget {
   const TaskListPage({super.key});
 
   @override
-  State<TaskListPage> createState() => _TaskListPageState();
+  ConsumerState<TaskListPage> createState() => _TaskListPageState();
 }
 
-class _TaskListPageState extends State<TaskListPage> {
+class _TaskListPageState extends ConsumerState<TaskListPage> {
   final searchController = TextEditingController();
   String selectedPriority = "";
-
-  final List<Task> dummyTasks = [
-    Task(
-      id: "1",
-      title: "Create app briefing",
-      description: "App briefing for project",
-      createdAt: 1785597434,
-      startDate: 1785597434,
-      endDate: 1785597434,
-      isDone: false,
-      priority: TaskPriority.low,
-      userId: "1,",
-    ),
-    Task(
-      id: "2",
-      title: "Design task screen UI",
-      description: "UI Mockup for Task List",
-      createdAt: 1785597434,
-      startDate: 1785597434,
-      endDate: 1785597434,
-      isDone: true,
-      priority: TaskPriority.high,
-      userId: "2,",
-    ),
-  ];
 
   @override
   void dispose() {
@@ -50,6 +27,8 @@ class _TaskListPageState extends State<TaskListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tasksAsync = ref.watch(tasksListProvider);
+
     return Scaffold(
       body: ListView(
         children: [
@@ -90,8 +69,10 @@ class _TaskListPageState extends State<TaskListPage> {
 
           // * Tasks list
           ...tasksList(
-            tasks: dummyTasks,
+            tasksAsync: tasksAsync,
+            selectedPriority: selectedPriority,
             onStatusChanged: (task, isDone) {},
+            onRetry: () => ref.read(tasksListProvider.notifier).refresh(),
           ),
         ],
       ),
