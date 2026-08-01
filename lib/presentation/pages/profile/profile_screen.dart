@@ -1,32 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/presentation/pages/profile/widgets/activity.dart';
-import 'package:xlerate/presentation/pages/profile/widgets/badge_card.dart';
-import 'package:xlerate/presentation/pages/profile/widgets/logout_button.dart';
-import 'package:xlerate/presentation/pages/profile/widgets/profile_header.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'widgets/activity.dart';
+import 'widgets/badge_card.dart';
+import 'widgets/logout_button.dart';
+import 'widgets/profile_header.dart';
+import 'edit_profile_screen.dart';
 import 'package:xlerate/domain/entities/user_model.dart';
+import 'package:xlerate/presentation/providers/user_provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+/// Screen displaying the user's profile overview, user metrics (events, courses, tasks),
+/// earned badges and certificates, and navigation shortcuts to edit profile or log out.
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Declaring as const for better performance with mock data
-    const user = UserModel(
-      id: "1",
-      name: "User Name",
-      email: "user@example.com",
-      role: "Learner",
-      imageUrl: null,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch active user state from Riverpod, providing fallback guest details if null
+    final user =
+        ref.watch(userProvider) ??
+        const UserModel(
+          id: "1",
+          name: "Budi",
+          email: "example@mail.com",
+          role: "Learner",
+          avatar: null, // Fallback default avatar property
+        );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
         centerTitle: true,
         actions: [
+          // Edit Profile Navigation Shortcut
           IconButton(
             onPressed: () {
-              // TODO: Navigate to Edit Profile Screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
             },
             icon: const Icon(Icons.edit_outlined),
           ),
@@ -37,10 +50,12 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ProfileHeader(user: user),
+            // --- USER PROFILE HEADER COMPONENT ---
+            ProfileHeader(user: user),
 
             const SizedBox(height: 30),
 
+            // --- ACTIVITY SECTION TITLE ---
             const Text(
               "Activity",
               style: TextStyle(
@@ -51,6 +66,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
+            // --- ACTIVITY METRICS GRID ---
             GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -84,6 +100,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
+            // --- BADGES & CERTIFICATES HEADER ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -96,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    // TODO: Navigate to badges screen
+                    // TODO: Implement navigation to full badges archive screen
                   },
                   child: const Text("View All"),
                 ),
@@ -105,6 +122,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
+            // --- FEATURED BADGE CARDS ROW ---
             const Row(
               children: [
                 Expanded(
@@ -123,6 +141,7 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
+            // --- LOGOUT ACTION BUTTON ---
             const LogoutButton(),
           ],
         ),
