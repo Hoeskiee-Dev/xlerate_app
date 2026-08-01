@@ -48,11 +48,15 @@ Widget taskCard() => Padding(
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: const Color(0xFF378C3A),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                "High",
+                "Low",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFFB5DB88),
+                ),
               ),
             ),
           ],
