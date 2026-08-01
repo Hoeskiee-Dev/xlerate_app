@@ -26,7 +26,7 @@ class ProgramDetailPage extends ConsumerWidget {
             children: [
               eventHeader(context, program),
               eventTitle(program),
-              attendies(program),
+              attendies(context, program),
               DescriptionSection(program: program),
 
               verticalSpaces(16),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
 import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
 import 'package:xlerate/presentation/pages/login_page.dart';
+import 'package:xlerate/presentation/pages/program/participants/participants_screen.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
 import 'package:xlerate/presentation/pages/program/program_list/program_list_screen.dart';
 
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Xlerate',
       home: const LoginPage(),
+      // home: const ParticipantsScreen(),
       // home: const FeedbackPage(),
       // home: CreateFeedbackFormScreen(),
       // home: ProgramDetailPage(),
