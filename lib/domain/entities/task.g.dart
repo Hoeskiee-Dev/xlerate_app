@@ -15,6 +15,7 @@ _Task _$TaskFromJson(Map<String, dynamic> json) => _Task(
   endDate: (json['endDate'] as num).toInt(),
   isDone: json['isDone'] as bool,
   priority: $enumDecode(_$TaskPriorityEnumMap, json['priority']),
+  userId: json['userId'] as String,
 );
 
 Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
@@ -26,6 +27,7 @@ Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
   'endDate': instance.endDate,
   'isDone': instance.isDone,
   'priority': _$TaskPriorityEnumMap[instance.priority]!,
+  'userId': instance.userId,
 };
 
 const _$TaskPriorityEnumMap = {

@@ -27,6 +27,7 @@ class _TaskListPageState extends State<TaskListPage> {
       endDate: 1785597434,
       isDone: false,
       priority: TaskPriority.low,
+      userId: "1,",
     ),
     Task(
       id: "2",
@@ -37,6 +38,7 @@ class _TaskListPageState extends State<TaskListPage> {
       endDate: 1785597434,
       isDone: true,
       priority: TaskPriority.high,
+      userId: "2,",
     ),
   ];
 

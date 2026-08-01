@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Task {
 
- String get id; String get title; String get description; int get createdAt; int get startDate; int get endDate; bool get isDone; TaskPriority get priority;
+ String get id; String get title; String get description; int get createdAt; int get startDate; int get endDate; bool get isDone; TaskPriority get priority; String get userId;
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TaskCopyWith<Task> get copyWith => _$TaskCopyWithImpl<Task>(this as Task, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Task&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.priority, priority) || other.priority == priority));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Task&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.userId, userId) || other.userId == userId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,createdAt,startDate,endDate,isDone,priority);
+int get hashCode => Object.hash(runtimeType,id,title,description,createdAt,startDate,endDate,isDone,priority,userId);
 
 @override
 String toString() {
-  return 'Task(id: $id, title: $title, description: $description, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, isDone: $isDone, priority: $priority)';
+  return 'Task(id: $id, title: $title, description: $description, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, isDone: $isDone, priority: $priority, userId: $userId)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TaskCopyWith<$Res>  {
   factory $TaskCopyWith(Task value, $Res Function(Task) _then) = _$TaskCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description, int createdAt, int startDate, int endDate, bool isDone, TaskPriority priority
+ String id, String title, String description, int createdAt, int startDate, int endDate, bool isDone, TaskPriority priority, String userId
 });
 
 
@@ -65,7 +65,7 @@ class _$TaskCopyWithImpl<$Res>
 
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? createdAt = null,Object? startDate = null,Object? endDate = null,Object? isDone = null,Object? priority = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? createdAt = null,Object? startDate = null,Object? endDate = null,Object? isDone = null,Object? priority = null,Object? userId = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as int,startDate: null == startDate ? _self.startDate : startDate // ignore: cas
 as int,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as int,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
 as bool,priority: null == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
-as TaskPriority,
+as TaskPriority,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority,  String userId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Task() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority);case _:
+return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority,_that.userId);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.sta
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority,  String userId)  $default,) {final _that = this;
 switch (_that) {
 case _Task():
-return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority);case _:
+return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority,_that.userId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.sta
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  int createdAt,  int startDate,  int endDate,  bool isDone,  TaskPriority priority,  String userId)?  $default,) {final _that = this;
 switch (_that) {
 case _Task() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority);case _:
+return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.startDate,_that.endDate,_that.isDone,_that.priority,_that.userId);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.title,_that.description,_that.createdAt,_that.sta
 @JsonSerializable()
 
 class _Task extends Task {
-  const _Task({required this.id, required this.title, required this.description, required this.createdAt, required this.startDate, required this.endDate, required this.isDone, required this.priority}): super._();
+  const _Task({required this.id, required this.title, required this.description, required this.createdAt, required this.startDate, required this.endDate, required this.isDone, required this.priority, required this.userId}): super._();
   factory _Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
 @override final  String id;
@@ -227,6 +228,7 @@ class _Task extends Task {
 @override final  int endDate;
 @override final  bool isDone;
 @override final  TaskPriority priority;
+@override final  String userId;
 
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Task&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.priority, priority) || other.priority == priority));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Task&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.userId, userId) || other.userId == userId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,createdAt,startDate,endDate,isDone,priority);
+int get hashCode => Object.hash(runtimeType,id,title,description,createdAt,startDate,endDate,isDone,priority,userId);
 
 @override
 String toString() {
-  return 'Task(id: $id, title: $title, description: $description, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, isDone: $isDone, priority: $priority)';
+  return 'Task(id: $id, title: $title, description: $description, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, isDone: $isDone, priority: $priority, userId: $userId)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
   factory _$TaskCopyWith(_Task value, $Res Function(_Task) _then) = __$TaskCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description, int createdAt, int startDate, int endDate, bool isDone, TaskPriority priority
+ String id, String title, String description, int createdAt, int startDate, int endDate, bool isDone, TaskPriority priority, String userId
 });
 
 
@@ -278,7 +280,7 @@ class __$TaskCopyWithImpl<$Res>
 
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? createdAt = null,Object? startDate = null,Object? endDate = null,Object? isDone = null,Object? priority = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? createdAt = null,Object? startDate = null,Object? endDate = null,Object? isDone = null,Object? priority = null,Object? userId = null,}) {
   return _then(_Task(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -288,7 +290,8 @@ as int,startDate: null == startDate ? _self.startDate : startDate // ignore: cas
 as int,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as int,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
 as bool,priority: null == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
-as TaskPriority,
+as TaskPriority,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

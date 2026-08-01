@@ -18,6 +18,7 @@ abstract class Task with _$Task {
     required int endDate,
     required bool isDone,
     required TaskPriority priority,
+    required String userId,
   }) = _Task;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
