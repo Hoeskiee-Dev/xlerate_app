@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/presentation/pages/productivity/methods/task_card.dart';
+import 'package:xlerate/domain/entities/task.dart';
+import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
+import 'package:xlerate/presentation/pages/productivity/methods/tasks_list.dart';
 
 class TaskListPage extends StatefulWidget {
   const TaskListPage({super.key});
@@ -14,6 +16,29 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   final searchController = TextEditingController();
   String selectedPriority = "";
+
+  final List<Task> dummyTasks = [
+    Task(
+      id: "1",
+      title: "Create app briefing",
+      description: "App briefing for project",
+      createdAt: 1785597434,
+      startDate: 1785597434,
+      endDate: 1785597434,
+      isDone: false,
+      priority: TaskPriority.low,
+    ),
+    Task(
+      id: "2",
+      title: "Design task screen UI",
+      description: "UI Mockup for Task List",
+      createdAt: 1785597434,
+      startDate: 1785597434,
+      endDate: 1785597434,
+      isDone: true,
+      priority: TaskPriority.high,
+    ),
+  ];
 
   @override
   void dispose() {
@@ -61,11 +86,11 @@ class _TaskListPageState extends State<TaskListPage> {
             ),
           ),
 
-          // // * Tasks list
-          // ...tasksList(),
-          taskCard(),
-          taskCard(),
-          taskCard(),
+          // * Tasks list
+          ...tasksList(
+            tasks: dummyTasks,
+            onStatusChanged: (task, isDone) {},
+          ),
         ],
       ),
     );
