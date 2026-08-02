@@ -55,7 +55,7 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
               eventTitle(displayProgram),
 
               // --- ATTENDEES THUMBNAILS LIST ---
-              attendies(displayProgram),
+              attendies(context, displayProgram),
 
               // --- PROGRAM DESCRIPTION SECTION ---
               DescriptionSection(program: displayProgram),

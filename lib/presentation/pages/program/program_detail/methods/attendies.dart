@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/domain/entities/program.dart';
+import 'package:xlerate/presentation/pages/program/participants/participants_screen.dart';
 
-Widget attendies(Program program) {
+Widget attendies(BuildContext context, Program program) {
   final bool isUnlimited = program.totalSeats == null;
   final int seatsLeft = isUnlimited
       ? 0
@@ -11,50 +12,64 @@ Widget attendies(Program program) {
     padding: const EdgeInsets.all(16),
     child: Row(
       children: [
-        // * Participants
-        SizedBox(
-          width: 150,
-          height: 44,
-          child: Stack(
-            alignment: Alignment.centerLeft,
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ParticipantsScreen(
+                  program: program,
+                ),
+              ),
+            );
+          },
+          child: Row(
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.amber,
-                child: Text("S"),
-              ),
-              Positioned(
-                left: 30,
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.red,
-                  child: Text("F"),
+              SizedBox(
+                width: 150,
+                height: 44,
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    const CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.amber,
+                      child: Text("S"),
+                    ),
+                    const Positioned(
+                      left: 30,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.red,
+                        child: Text("F"),
+                      ),
+                    ),
+                    const Positioned(
+                      left: 60,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.green,
+                        child: Text("G"),
+                      ),
+                    ),
+                    const Positioned(
+                      left: 90,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey,
+                        child: Text("+"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                left: 60,
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.green,
-                  child: Text("G"),
-                ),
-              ),
-              Positioned(
-                left: 90,
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.grey,
-                  child: Text("+"),
+              Text(
+                "${program.joinedCount} joined",
+                style: TextStyle(
+                  color: Colors.grey.shade600,
                 ),
               ),
             ],
-          ),
-        ),
-
-        Text(
-          "${program.joinedCount} joined",
-          style: TextStyle(
-            color: Colors.grey.shade600,
           ),
         ),
 
@@ -63,7 +78,7 @@ Widget attendies(Program program) {
         // * Seats number
         Column(
           children: [
-            Text("No. of seats left"),
+            const Text("No. of seats left"),
             Text(
               isUnlimited ? "Unlimited" : "$seatsLeft Seat(s)",
               style: const TextStyle(

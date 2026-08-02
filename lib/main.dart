@@ -8,6 +8,7 @@ import 'package:xlerate/presentation/pages/main_page.dart'; // <-- Make sure thi
 import 'package:xlerate/presentation/pages/login_page.dart';
 import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
 import 'package:xlerate/presentation/pages/profile/profile_screen.dart';
+import 'package:xlerate/presentation/pages/program/participants/participants_screen.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
 import 'package:xlerate/presentation/pages/program/program_list/program_list_screen.dart';
 
