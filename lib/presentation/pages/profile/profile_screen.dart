@@ -6,32 +6,33 @@ import 'widgets/logout_button.dart';
 import 'widgets/profile_header.dart';
 import 'edit_profile_screen.dart';
 import 'package:xlerate/domain/entities/user_model.dart';
+import 'registered_programs_screen.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
-/// Screen displaying the user's profile overview, user metrics (events, courses, tasks),
-/// earned badges and certificates, and navigation shortcuts to edit profile or log out.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch active user state from Riverpod, providing fallback guest details if null
-    final user =
-        ref.watch(userProvider) ??
-        const UserModel(
-          id: "1",
-          name: "Budi",
-          email: "example@mail.com",
-          role: "Learner",
-          avatar: null, // Fallback default avatar property
-        );
+    final user = ref.watch(userProvider);
+
+    if (user == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFFF6B00),
+          ),
+        ),
+      );
+    }
+
+    final int registeredCount = user.joinedPrograms?.length ?? 0;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
         centerTitle: true,
         actions: [
-          // Edit Profile Navigation Shortcut
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -50,12 +51,10 @@ class ProfileScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- USER PROFILE HEADER COMPONENT ---
             ProfileHeader(user: user),
 
             const SizedBox(height: 30),
 
-            // --- ACTIVITY SECTION TITLE ---
             const Text(
               "Activity",
               style: TextStyle(
@@ -66,34 +65,40 @@ class ProfileScreen extends ConsumerWidget {
 
             const SizedBox(height: 15),
 
-            // --- ACTIVITY METRICS GRID ---
-            GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.3,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                ActivityCard(
-                  number: "12",
-                  title: "Events Attended",
-                  icon: Icons.event,
+            Row(
+              children: [
+                Expanded(
+                  child: ActivityCard(
+                    number: registeredCount.toString(),
+                    title: "Events Registered",
+                    icon: Icons.event_available,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisteredProgramsScreen(
+                            joinedPrograms: user.joinedPrograms ?? [],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                ActivityCard(
-                  number: "9",
-                  title: "Completed Courses",
-                  icon: Icons.school,
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: ActivityCard(
+                    number: "27",
+                    title: "Tasks Completed",
+                    icon: Icons.task_alt,
+                  ),
                 ),
-                ActivityCard(
-                  number: "27",
-                  title: "Tasks Completed",
-                  icon: Icons.task_alt,
-                ),
-                ActivityCard(
-                  number: "4",
-                  title: "Certificates",
-                  icon: Icons.workspace_premium,
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: ActivityCard(
+                    number: "4",
+                    title: "Certificates",
+                    icon: Icons.workspace_premium,
+                  ),
                 ),
               ],
             ),
@@ -130,6 +135,7 @@ class ProfileScreen extends ConsumerWidget {
                     title: "UI/UX Design",
                   ),
                 ),
+
                 SizedBox(width: 15),
                 Expanded(
                   child: BadgeCard(
@@ -141,7 +147,7 @@ class ProfileScreen extends ConsumerWidget {
 
             const SizedBox(height: 40),
 
-            // --- LOGOUT ACTION BUTTON ---
+            // --- LOGOUT BUTTON ---
             const LogoutButton(),
           ],
         ),

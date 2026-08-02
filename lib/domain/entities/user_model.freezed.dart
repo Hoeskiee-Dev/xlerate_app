@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get name; String get email; String get role; String? get dob; String? get avatar;
+ String get id; String get name; String get email; String get role; String? get dob; String? get avatar; List<JoinedProgram>? get joinedPrograms;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.dob, dob) || other.dob == dob)&&(identical(other.avatar, avatar) || other.avatar == avatar));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.dob, dob) || other.dob == dob)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&const DeepCollectionEquality().equals(other.joinedPrograms, joinedPrograms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,dob,avatar);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,dob,avatar,const DeepCollectionEquality().hash(joinedPrograms));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, email: $email, role: $role, dob: $dob, avatar: $avatar)';
+  return 'UserModel(id: $id, name: $name, email: $email, role: $role, dob: $dob, avatar: $avatar, joinedPrograms: $joinedPrograms)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String email, String role, String? dob, String? avatar
+ String id, String name, String email, String role, String? dob, String? avatar, List<JoinedProgram>? joinedPrograms
 });
 
 
@@ -65,7 +65,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? dob = freezed,Object? avatar = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? dob = freezed,Object? avatar = freezed,Object? joinedPrograms = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,dob: freezed == dob ? _self.dob : dob // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,joinedPrograms: freezed == joinedPrograms ? _self.joinedPrograms : joinedPrograms // ignore: cast_nullable_to_non_nullable
+as List<JoinedProgram>?,
   ));
 }
 
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar,  List<JoinedProgram>? joinedPrograms)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar,_that.joinedPrograms);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avata
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar,  List<JoinedProgram>? joinedPrograms)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar,_that.joinedPrograms);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avata
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String email,  String role,  String? dob,  String? avatar,  List<JoinedProgram>? joinedPrograms)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avatar,_that.joinedPrograms);case _:
   return null;
 
 }
@@ -214,7 +215,7 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.dob,_that.avata
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({this.id = '', this.name = '', this.email = '', this.role = 'Learner', this.dob, this.avatar});
+  const _UserModel({this.id = '', this.name = '', this.email = '', this.role = 'Learner', this.dob, this.avatar, final  List<JoinedProgram>? joinedPrograms}): _joinedPrograms = joinedPrograms;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override@JsonKey() final  String id;
@@ -223,6 +224,15 @@ class _UserModel implements UserModel {
 @override@JsonKey() final  String role;
 @override final  String? dob;
 @override final  String? avatar;
+ final  List<JoinedProgram>? _joinedPrograms;
+@override List<JoinedProgram>? get joinedPrograms {
+  final value = _joinedPrograms;
+  if (value == null) return null;
+  if (_joinedPrograms is EqualUnmodifiableListView) return _joinedPrograms;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.dob, dob) || other.dob == dob)&&(identical(other.avatar, avatar) || other.avatar == avatar));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.dob, dob) || other.dob == dob)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&const DeepCollectionEquality().equals(other._joinedPrograms, _joinedPrograms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,dob,avatar);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,dob,avatar,const DeepCollectionEquality().hash(_joinedPrograms));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, email: $email, role: $role, dob: $dob, avatar: $avatar)';
+  return 'UserModel(id: $id, name: $name, email: $email, role: $role, dob: $dob, avatar: $avatar, joinedPrograms: $joinedPrograms)';
 }
 
 
@@ -257,7 +267,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String email, String role, String? dob, String? avatar
+ String id, String name, String email, String role, String? dob, String? avatar, List<JoinedProgram>? joinedPrograms
 });
 
 
@@ -274,7 +284,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? dob = freezed,Object? avatar = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,Object? role = null,Object? dob = freezed,Object? avatar = freezed,Object? joinedPrograms = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -282,7 +292,8 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,dob: freezed == dob ? _self.dob : dob // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,joinedPrograms: freezed == joinedPrograms ? _self._joinedPrograms : joinedPrograms // ignore: cast_nullable_to_non_nullable
+as List<JoinedProgram>?,
   ));
 }
 

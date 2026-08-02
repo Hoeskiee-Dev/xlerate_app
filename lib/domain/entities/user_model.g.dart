@@ -13,6 +13,9 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   role: json['role'] as String? ?? 'Learner',
   dob: json['dob'] as String?,
   avatar: json['avatar'] as String?,
+  joinedPrograms: (json['joinedPrograms'] as List<dynamic>?)
+      ?.map((e) => JoinedProgram.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -23,4 +26,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'role': instance.role,
       'dob': instance.dob,
       'avatar': instance.avatar,
+      'joinedPrograms': instance.joinedPrograms,
     };
