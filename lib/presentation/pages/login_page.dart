@@ -6,8 +6,6 @@ import 'package:xlerate/presentation/providers/user_provider.dart';
 import 'package:xlerate/core/result.dart';
 import 'package:xlerate/domain/entities/user_model.dart';
 
-/// Screen responsible for authenticating existing users into the application
-/// via cloud MockAPI endpoints using Riverpod state management.
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -18,17 +16,14 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   // UI and state control variables
   bool hidePassword = true;
-  bool _isLoading =
-      false; // Tracks network loading state to prevent double clicks
+  bool _isLoading = false;
 
-  // Controllers and form key for validation
   final emailControl = TextEditingController();
   final passwordControl = TextEditingController();
   final form = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    // Clean up controllers to prevent memory leaks
     emailControl.dispose();
     passwordControl.dispose();
     super.dispose();
@@ -50,15 +45,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // --- BRANDING / LOGO HEADER ---
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(12),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
                     ),
-                    child: const Icon(Icons.image, color: Colors.grey),
                   ),
+
                   const SizedBox(height: 40),
 
                   // --- EMAIL INPUT FIELD ---
