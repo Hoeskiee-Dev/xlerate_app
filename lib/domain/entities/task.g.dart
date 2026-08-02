@@ -12,7 +12,7 @@ _Task _$TaskFromJson(Map<String, dynamic> json) => _Task(
   description: json['description'] as String,
   createdAt: (json['createdAt'] as num).toInt(),
   startDate: (json['startDate'] as num).toInt(),
-  endDate: (json['endDate'] as num).toInt(),
+  endDate: (json['endDate'] as num?)?.toInt(),
   isDone: json['isDone'] as bool,
   priority: $enumDecode(_$TaskPriorityEnumMap, json['priority']),
   userId: json['userId'] as String,
