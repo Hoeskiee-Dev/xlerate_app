@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:xlerate/domain/entities/task.dart';
-import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
