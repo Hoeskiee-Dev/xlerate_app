@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/domain/usecases/create_program/create_program_params.dart';
 import 'package:xlerate/presentation/providers/programs/add_program_provider.dart';
-import 'package:xlerate/presentation/pages/create_feedback_form_screen.dart';
+import 'package:xlerate/presentation/pages/feedback/create_feedback_form_screen.dart';
 
 // ---  NEW CUSTOM SECTION IMPORTS ---
 import 'widgets/sections/event_details_section.dart';

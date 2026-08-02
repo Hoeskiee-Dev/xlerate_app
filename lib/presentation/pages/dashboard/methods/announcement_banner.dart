@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/presentation/pages/announcement/announcement_screen.dart';
 
 final List<Map<String, String>> announcements = [
   {
@@ -115,10 +116,15 @@ Widget announcementBanner(
 
       GestureDetector(
         onTap: () {
-          // ! TODO : Navigate to Announcement List Screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AnnouncementScreen(),
+            ),
+          );
         },
-        child: Text(
-          "See Announcement ->",
+        child: const Text(
+          "See Announcements ->",
           style: TextStyle(
             color: Colors.blue,
           ),
