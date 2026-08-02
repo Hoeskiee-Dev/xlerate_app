@@ -11,15 +11,35 @@ class MockTaskRepository implements TasksRepository {
   final _baseURL = "https://6a6182d0da10c59c18098fc4.mockapi.io/api/v1";
 
   @override
-  Future<Result<Task>> addTask({required Task task}) async {
-    // TODO: implement addTask
-    throw UnimplementedError();
+  Future<Result<void>> addTask({required Task task}) async {
+    try {
+      await _dio!.post("$_baseURL/tasks", data: task.toJson());
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      if (e.response != null && e.response?.data != null) {
+        return Result.failed(
+          "${e.response?.data['message'] ?? "Failed to create new task!"}",
+        );
+      }
+
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error: $e");
+    }
   }
 
   @override
   Future<Result<void>> deleteTask({required String taskId}) async {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
+    try {
+      await _dio!.delete("$_baseURL/tasks/$taskId");
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error: $e");
+    }
   }
 
   @override
@@ -39,13 +59,35 @@ class MockTaskRepository implements TasksRepository {
 
   @override
   Future<Result<Task>> getTask({required String taskId}) async {
-    // TODO: implement getTask
-    throw UnimplementedError();
+    try {
+      final response = await _dio!.get("$_baseURL/tasks/$taskId");
+
+      final result = Map<String, dynamic>.from(response.data);
+
+      return Result.success(Task.fromJson(result));
+    } on DioException catch (e) {
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error: $e");
+    }
   }
 
   @override
-  Future<Result<Task>> updateTask({required Task task}) async {
-    // TODO: implement updateTask
-    throw UnimplementedError();
+  Future<Result<void>> updateTask({required Task task}) async {
+    try {
+      await _dio!.put("$_baseURL/tasks/${task.id}", data: task.toJson());
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      if (e.response != null && e.response?.data != null) {
+        return Result.failed(
+          "${e.response?.data['message'] ?? "Failed to update task!"}",
+        );
+      }
+
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error: $e");
+    }
   }
 }
