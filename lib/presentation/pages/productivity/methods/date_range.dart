@@ -65,6 +65,7 @@ Widget dateRange({
                 icon: Icons.date_range_outlined,
                 hintText: "End date",
                 selectedDate: endDate,
+                minDate: startDate,
                 onDatePicked: onEndDateSelected,
               ),
             ],
@@ -81,14 +82,32 @@ Widget _datePickerTile({
   required String hintText,
   required DateTime? selectedDate,
   required ValueChanged<DateTime> onDatePicked,
+  DateTime? minDate,
 }) {
   return InkWell(
     borderRadius: BorderRadius.circular(12),
     onTap: () async {
+      final now = DateTime.now();
+
+      DateTime calculatedFirstDate = minDate ?? DateTime(2020);
+
+      if (selectedDate != null && selectedDate.isBefore(calculatedFirstDate)) {
+        calculatedFirstDate = DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+        );
+      }
+
+      final DateTime initial = selectedDate ?? (minDate ?? now);
+      final DateTime safeInitialDate = initial.isBefore(calculatedFirstDate)
+          ? calculatedFirstDate
+          : initial;
+
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate ?? DateTime.now(),
-        firstDate: DateTime.now(),
+        initialDate: safeInitialDate,
+        firstDate: calculatedFirstDate,
         lastDate: DateTime(2030),
       );
 

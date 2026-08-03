@@ -24,6 +24,7 @@ dependencies:
   riverpod_annotation: ^4.0.3
   url_launcher: ^6.3.2
   intl: ^0.20.3
+  flutter_slidable: ^4.0.3
 
 dev_dependencies:
   flutter_test:

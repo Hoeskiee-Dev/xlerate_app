@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/domain/entities/task.dart';
 import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/domain/usecases/add_task/add_task_params.dart';
+import 'package:xlerate/domain/usecases/update_task_details/update_task_details_params.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/create_task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/date_range.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/description_text_field.dart';
@@ -11,23 +12,54 @@ import 'package:xlerate/presentation/pages/productivity/methods/submit_task_butt
 import 'package:xlerate/presentation/pages/productivity/methods/text_task.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/title_text_field.dart';
 import 'package:xlerate/presentation/providers/tasks/add_task_provider.dart';
+import 'package:xlerate/presentation/providers/tasks/edit_task_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
 class CreateTaskPage extends ConsumerStatefulWidget {
-  const CreateTaskPage({super.key});
+  final Task? task;
+
+  const CreateTaskPage({super.key, this.task});
 
   @override
   ConsumerState<CreateTaskPage> createState() => _CreateTaskPageState();
 }
 
 class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
-  final titleTextController = TextEditingController();
-  final descriptionTextController = TextEditingController();
+  late var titleTextController = TextEditingController();
+  late var descriptionTextController = TextEditingController();
   bool isAllDay = false;
   DateTime? startDate;
   DateTime? endDate;
   TaskPriority? selectedPriority = TaskPriority.medium;
+
+  bool get isEditMode => widget.task != null;
+
+  @override
+  void initState() {
+    super.initState();
+    titleTextController = TextEditingController(text: widget.task?.title ?? '');
+    descriptionTextController = TextEditingController(
+      text: widget.task?.description ?? '',
+    );
+
+    if (isEditMode) {
+      selectedPriority = widget.task!.priority;
+
+      startDate = DateTime.fromMillisecondsSinceEpoch(
+        widget.task!.startDate * 1000,
+      );
+      endDate = DateTime.fromMillisecondsSinceEpoch(
+        widget.task!.endDate * 1000,
+      );
+
+      if (startDate!.year == endDate!.year &&
+          startDate!.month == endDate!.month &&
+          startDate!.day == endDate!.day) {
+        isAllDay = true;
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -79,27 +111,52 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
     final int startDateSec = normalizedStartDate.millisecondsSinceEpoch ~/ 1000;
     final int endDateSec = normalizedEndDate.millisecondsSinceEpoch ~/ 1000;
 
-    final newTask = Task(
-      id: '', // * Automatically set by mockAPI
-      title: title,
-      description: description,
-      createdAt: 0,
-      startDate: startDateSec,
-      endDate: endDateSec,
-      isDone: false,
-      priority: selectedPriority ?? TaskPriority.medium,
-      userId: userId,
-    );
+    String? errorMessage;
 
-    final errorMessage = await ref
-        .read(createTaskProvider.notifier)
-        .submitTask(params: AddTaskParams(task: newTask));
+    if (isEditMode) {
+      final updatedTask = widget.task!.copyWith(
+        title: title,
+        description: description,
+        startDate: startDateSec,
+        endDate: endDateSec,
+        priority: selectedPriority ?? TaskPriority.medium,
+      );
+
+      errorMessage = await ref
+          .read(editTaskProvider.notifier)
+          .editTask(
+            params: UpdateTaskDetailsParams(task: updatedTask),
+            updatedTask: updatedTask,
+          );
+    } else {
+      final newTask = Task(
+        id: '', // * Automatic filled by MockAPI
+        title: title,
+        description: description,
+        createdAt: 0,
+        startDate: startDateSec,
+        endDate: endDateSec,
+        isDone: false,
+        priority: selectedPriority ?? TaskPriority.medium,
+        userId: userId,
+      );
+
+      errorMessage = await ref
+          .read(createTaskProvider.notifier)
+          .submitTask(params: AddTaskParams(task: newTask));
+    }
 
     if (!mounted) return;
 
     if (errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Task created successfully!")),
+        SnackBar(
+          content: Text(
+            widget.task != null
+                ? "Task updated successfully"
+                : "Task created successfully!",
+          ),
+        ),
       );
       Navigator.pop(context);
       ref.read(tasksListProvider.notifier).refresh();
@@ -116,13 +173,17 @@ class _CreateTaskPageState extends ConsumerState<CreateTaskPage> {
   @override
   Widget build(BuildContext context) {
     final createTaskState = ref.watch(createTaskProvider);
-    final isLoading = createTaskState.isLoading;
+    final editTaskState = ref.watch(editTaskProvider);
+
+    final isLoading = isEditMode
+        ? editTaskState.isLoading
+        : createTaskState.isLoading;
 
     return Scaffold(
       body: ListView(
         children: [
           // * Create task header
-          createTaskHeader(context),
+          createTaskHeader(context, widget.task != null ? true : false),
 
           // * Text
           textTask(),

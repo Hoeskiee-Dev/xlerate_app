@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/domain/usecases/change_task_status/change_task_status_params.dart';
+import 'package:xlerate/presentation/pages/productivity/create_task_page.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
@@ -92,8 +93,16 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
                   );
             },
             onRetry: () => ref.read(tasksListProvider.notifier).refresh(),
-            onDismissed: (task) {
+            onDelete: (task) {
               ref.read(removeTaskProvider.notifier).removeTask(params: task.id);
+            },
+            onEdit: (task) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateTaskPage(task: task),
+                ),
+              );
             },
           ),
         ],

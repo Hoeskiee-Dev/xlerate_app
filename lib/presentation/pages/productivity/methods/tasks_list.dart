@@ -8,7 +8,8 @@ List<Widget> tasksList({
   String selectedPriority = "",
   void Function(Task task, bool? isDone)? onStatusChanged,
   void Function(Task task)? onTap,
-  void Function(Task task)? onDismissed,
+  void Function(Task task)? onDelete,
+  void Function(Task task)? onEdit,
   VoidCallback? onRetry,
 }) {
   return tasksAsync.when(
@@ -45,11 +46,8 @@ List<Widget> tasksList({
               task: task,
               onStatusChanged: (isDone) => onStatusChanged?.call(task, isDone),
               onTap: () => onTap?.call(task),
-              onDismissed: () {
-                if (onDismissed != null) {
-                  onDismissed(task);
-                }
-              },
+              onDeletePressed: () => onDelete?.call(task),
+              onEditPressed: () => onEdit?.call(task),
             ),
           )
           .toList();

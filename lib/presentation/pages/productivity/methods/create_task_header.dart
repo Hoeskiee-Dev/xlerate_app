@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget createTaskHeader(BuildContext context) => Padding(
+Widget createTaskHeader(BuildContext context, bool isUpdate) => Padding(
   padding: const EdgeInsets.all(16),
   child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -16,8 +16,8 @@ Widget createTaskHeader(BuildContext context) => Padding(
         ),
       ),
 
-      const Text(
-        "New Task",
+      Text(
+        isUpdate ? "Update Task" : "New Task",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 24,

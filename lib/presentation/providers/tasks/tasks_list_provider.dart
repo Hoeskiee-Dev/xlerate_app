@@ -26,7 +26,6 @@ class TasksList extends _$TasksList {
     return switch (result) {
       Success(value: final tasks) => tasks,
       Failed(message: final msg) => () {
-        print("Error on get all tasks : $msg");
         throw Exception(msg);
       }(),
     };
@@ -51,6 +50,17 @@ class TasksList extends _$TasksList {
             return task.copyWith(isDone: isDone);
           }
           return task;
+        }).toList(),
+      );
+    }
+  }
+
+  void updateTaskInState(Task updatedTask) {
+    if (state.hasValue) {
+      final currentTasks = state.value ?? [];
+      state = AsyncData(
+        currentTasks.map((task) {
+          return task.id == updatedTask.id ? updatedTask : task;
         }).toList(),
       );
     }
