@@ -15,7 +15,7 @@ abstract class Task with _$Task {
     required String description,
     required int createdAt,
     required int startDate,
-    int? endDate,
+    required int endDate,
     required bool isDone,
     required TaskPriority priority,
     required String userId,
@@ -23,8 +23,13 @@ abstract class Task with _$Task {
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
+  String get formattedStartDate {
+    final date = DateTime.fromMillisecondsSinceEpoch(startDate * 1000);
+    return DateFormat('dd MMM yyyy').format(date);
+  }
+
   String get formattedEndDate {
-    final date = DateTime.fromMillisecondsSinceEpoch(endDate! * 1000);
-    return DateFormat('hh:mm a, dd MMMM yyyy').format(date);
+    final date = DateTime.fromMillisecondsSinceEpoch(endDate * 1000);
+    return DateFormat('dd MMM yyyy').format(date);
   }
 }

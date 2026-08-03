@@ -14,9 +14,9 @@ Widget dateRange({
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      // Header + Checkbox
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             "Task Date",

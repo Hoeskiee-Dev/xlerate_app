@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 
-Widget titleTextField({required TextEditingController controller}) {
+Widget descriptionTextField({required TextEditingController controller}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Task Title",
+          "Descriptions",
           style: TextStyle(
             color: Colors.grey.shade600,
             fontSize: 14,
@@ -17,8 +17,12 @@ Widget titleTextField({required TextEditingController controller}) {
         verticalSpaces(4),
         TextField(
           controller: controller,
+          maxLines: 4,
+          minLines: 3,
+          keyboardType: TextInputType.multiline,
           decoration: InputDecoration(
-            hintText: "Enter your task title",
+            hintText:
+                "Need to create app briefing like wireframe, app purpose, etc.",
             hintStyle: TextStyle(color: Colors.grey.shade400),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
