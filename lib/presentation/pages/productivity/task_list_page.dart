@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/domain/usecases/change_task_status/change_task_status_params.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/tasks_list.dart';
 import 'package:xlerate/presentation/providers/tasks/remove_task_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
-import 'package:xlerate/presentation/providers/usecases/delete_task.dart';
+import 'package:xlerate/presentation/providers/tasks/update_task_status_provider.dart';
 
 class TaskListPage extends ConsumerStatefulWidget {
   const TaskListPage({super.key});
@@ -71,7 +72,25 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
           ...tasksList(
             tasksAsync: tasksAsync,
             selectedPriority: selectedPriority,
-            onStatusChanged: (task, isDone) {},
+            onStatusChanged: (task, isDone) {
+              if (isDone == null) return;
+
+              ref
+                  .read(tasksListProvider.notifier)
+                  .updateTaskStatusInState(
+                    task.id,
+                    isDone,
+                  );
+
+              ref
+                  .read(updateTaskStatusProvider.notifier)
+                  .updateTaskStatus(
+                    params: ChangeTaskStatusParams(
+                      id: task.id,
+                      isDone: isDone,
+                    ),
+                  );
+            },
             onRetry: () => ref.read(tasksListProvider.notifier).refresh(),
             onDismissed: (task) {
               ref.read(removeTaskProvider.notifier).removeTask(params: task.id);

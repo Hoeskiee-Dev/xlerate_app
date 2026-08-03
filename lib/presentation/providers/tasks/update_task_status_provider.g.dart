@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tasks_list_provider.dart';
+part of 'update_task_status_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,43 @@ part of 'tasks_list_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(TasksList)
-final tasksListProvider = TasksListProvider._();
+@ProviderFor(UpdateTaskStatus)
+final updateTaskStatusProvider = UpdateTaskStatusProvider._();
 
-final class TasksListProvider
-    extends $AsyncNotifierProvider<TasksList, List<Task>> {
-  TasksListProvider._()
+final class UpdateTaskStatusProvider
+    extends $AsyncNotifierProvider<UpdateTaskStatus, void> {
+  UpdateTaskStatusProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'tasksListProvider',
+        name: r'updateTaskStatusProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$tasksListHash();
+  String debugGetCreateSourceHash() => _$updateTaskStatusHash();
 
   @$internal
   @override
-  TasksList create() => TasksList();
+  UpdateTaskStatus create() => UpdateTaskStatus();
 }
 
-String _$tasksListHash() => r'2696a4274c0a10b2af1d0149945c9a63f904342c';
+String _$updateTaskStatusHash() => r'032f3b4bc69a16737eb7cb28f660c1091eca543a';
 
-abstract class _$TasksList extends $AsyncNotifier<List<Task>> {
-  FutureOr<List<Task>> build();
+abstract class _$UpdateTaskStatus extends $AsyncNotifier<void> {
+  FutureOr<void> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Task>>, List<Task>>;
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Task>>, List<Task>>,
-              AsyncValue<List<Task>>,
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
               Object?,
               Object?
             >;

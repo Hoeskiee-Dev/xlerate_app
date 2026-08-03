@@ -90,4 +90,29 @@ class MockTaskRepository implements TasksRepository {
       return Result.failed("Internal error: $e");
     }
   }
+
+  @override
+  Future<Result<void>> changeTaskStatus({
+    required String taskId,
+    required bool isDone,
+  }) async {
+    try {
+      await _dio!.patch(
+        "$_baseURL/tasks/$taskId",
+        data: {'isDone': isDone},
+      );
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      if (e.response != null && e.response?.data != null) {
+        return Result.failed(
+          "${e.response?.data['message'] ?? "Failed to update task status!"}",
+        );
+      }
+
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error: $e");
+    }
+  }
 }

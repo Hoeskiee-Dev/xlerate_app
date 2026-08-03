@@ -42,6 +42,20 @@ class TasksList extends _$TasksList {
     }
   }
 
+  void updateTaskStatusInState(String taskId, bool isDone) {
+    if (state.hasValue) {
+      final currentTasks = state.value ?? [];
+      state = AsyncData(
+        currentTasks.map((task) {
+          if (task.id == taskId) {
+            return task.copyWith(isDone: isDone);
+          }
+          return task;
+        }).toList(),
+      );
+    }
+  }
+
   Future<void> refresh() async {
     final user = ref.read(userProvider);
     if (user == null) return;

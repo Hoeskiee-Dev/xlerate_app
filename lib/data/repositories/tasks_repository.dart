@@ -7,4 +7,8 @@ abstract interface class TasksRepository {
   Future<Result<void>> addTask({required Task task});
   Future<Result<void>> updateTask({required Task task});
   Future<Result<void>> deleteTask({required String taskId});
+  Future<Result<void>> changeTaskStatus({
+    required String taskId,
+    required bool isDone,
+  });
 }
