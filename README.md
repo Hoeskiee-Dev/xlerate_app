@@ -205,4 +205,15 @@ CHANGELOGS :
 -	Create new program, Form submit for create program (POST method into API)
 -	Fix UI, Simplify UI, use Separation of Concern, add Riverpod State Management.
 -	Other minor fix (all changes can be seen on github commit)
+-	Fix user state to stay logged in on app
+-	Created Task productivity (all CRUD)
+-	Created Parcitipation Screen
+-	Fix joinedCount into count by users that has joined
+-	Implemented dynamic profile activity for events registered
+-	Created announcement screen
+-	Update splash screen
+-	Fixing bug when user cannot save feedback form
+-	Create apply program function & fix feedback logic
+-	Etc.
+
 
