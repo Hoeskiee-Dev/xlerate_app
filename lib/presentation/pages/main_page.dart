@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/presentation/pages/dashboard/dashboard_page.dart';
-import 'package:xlerate/presentation/pages/productivity_screen.dart';
+import 'package:xlerate/presentation/pages/productivity/productivity_screen.dart';
 import 'package:xlerate/presentation/pages/program/program_list/program_list_screen.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
