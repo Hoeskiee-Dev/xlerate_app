@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xlerate/domain/entities/program.dart';
+import 'package:xlerate/domain/entities/saved_feedback_form.dart';
 import 'package:xlerate/domain/usecases/create_program/create_program_params.dart';
 import 'package:xlerate/presentation/providers/programs/add_program_provider.dart';
 import 'package:xlerate/presentation/pages/feedback/create_feedback_form_screen.dart';
@@ -357,7 +358,24 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       return;
     }
 
-    // Program Data mapping & Navigation logic is identical...
+    SavedFeedbackForm? createdFeedbackForm;
+
+    if (_createFeedback) {
+      final result = await Navigator.push<SavedFeedbackForm>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CreateFeedbackFormScreen(),
+        ),
+      );
+
+      if (result == null) {
+        _showErrorSnackBar('Please complete and publish the feedback form.');
+        return;
+      }
+
+      createdFeedbackForm = result;
+    }
+
     final newProgram = Program(
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
@@ -398,10 +416,10 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       url: _urlController.text.trim().isEmpty
           ? null
           : _urlController.text.trim(),
+      feedbackForm: createdFeedbackForm,
     );
 
     final params = CreateProgramParams(program: newProgram);
-
     final errorMessage = await ref
         .read(addProgramProvider.notifier)
         .submitProgram(params: params);
@@ -409,7 +427,6 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
     if (!mounted) return;
 
     if (errorMessage == null) {
-      // Show Success Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Row(
@@ -423,19 +440,8 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
           duration: Duration(seconds: 2),
         ),
       );
-
-      if (_createFeedback) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const CreateFeedbackFormScreen(),
-          ),
-        );
-      } else {
-        Navigator.pop(context, true);
-      }
+      Navigator.pop(context, true);
     } else {
-      // Jika error, tampilkan pesan dari result Failed
       _showErrorSnackBar('Failed to publish program: $errorMessage');
     }
   }
