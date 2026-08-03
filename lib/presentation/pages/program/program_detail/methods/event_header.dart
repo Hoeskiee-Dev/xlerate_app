@@ -10,6 +10,15 @@ Widget eventHeader(BuildContext context, Program program) => Stack(
       width: double.infinity,
       height: 250,
       fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return SizedBox(
+          height: 250,
+          width: double.infinity,
+          child: Center(
+            child: Icon(Icons.image_not_supported),
+          ),
+        );
+      },
     ),
 
     // * Navigation button

@@ -33,13 +33,17 @@ _Program _$ProgramFromJson(Map<String, dynamic> json) => _Program(
   extraReward: json['extraReward'] as String?,
   imageUrl: json['imageUrl'] as String,
   totalSeats: (json['totalSeats'] as num?)?.toInt(),
-  joinedCount: (json['joinedCount'] as num).toInt(),
   feedbackForm: json['feedbackForm'] == null
       ? null
       : SavedFeedbackForm.fromJson(
           json['feedbackForm'] as Map<String, dynamic>,
         ),
   registrationDeadLine: json['registrationDeadLine'] as String?,
+  joinedUserIds:
+      (json['joinedUserIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      [],
 );
 
 Map<String, dynamic> _$ProgramToJson(_Program instance) => <String, dynamic>{
@@ -69,7 +73,7 @@ Map<String, dynamic> _$ProgramToJson(_Program instance) => <String, dynamic>{
   'extraReward': instance.extraReward,
   'imageUrl': instance.imageUrl,
   'totalSeats': instance.totalSeats,
-  'joinedCount': instance.joinedCount,
   'feedbackForm': instance.feedbackForm?.toJson(),
   'registrationDeadLine': instance.registrationDeadLine,
+  'joinedUserIds': instance.joinedUserIds,
 };

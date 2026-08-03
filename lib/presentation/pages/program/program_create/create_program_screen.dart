@@ -412,7 +412,7 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       totalSeats: _totalSeatsController.text.trim().isEmpty
           ? null
           : int.tryParse(_totalSeatsController.text.trim()),
-      joinedCount: 0,
+
       url: _urlController.text.trim().isEmpty
           ? null
           : _urlController.text.trim(),

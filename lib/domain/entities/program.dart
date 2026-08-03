@@ -8,6 +8,8 @@ part 'program.g.dart';
 
 @freezed
 abstract class Program with _$Program {
+  const Program._();
+
   @JsonSerializable(explicitToJson: true)
   const factory Program({
     String? id,
@@ -37,10 +39,15 @@ abstract class Program with _$Program {
     required String imageUrl,
     @JsonKey(includeFromJson: false, includeToJson: false) File? imageFile,
     int? totalSeats,
-    required int joinedCount,
     SavedFeedbackForm? feedbackForm,
     String? registrationDeadLine,
+    @JsonKey(defaultValue: []) @Default([]) List<String> joinedUserIds,
   }) = _Program;
+
+  @override
+  List<String> get joinedUserIds;
+
+  int get joinedCount => joinedUserIds.length;
 
   factory Program.fromJson(Map<String, dynamic> json) =>
       _$ProgramFromJson(json);

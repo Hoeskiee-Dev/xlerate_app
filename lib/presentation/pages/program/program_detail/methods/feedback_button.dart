@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget feedbackButton({
   required bool isEventEnded,
-  required VoidCallback onPressed,
+  required Function()? onPressed,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -10,7 +10,7 @@ Widget feedbackButton({
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: isEventEnded ? null : onPressed,
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFFFF0EC),
           foregroundColor: const Color(0xFFFF6A3D),
@@ -22,7 +22,7 @@ Widget feedbackButton({
           ),
         ),
         child: Text(
-          isEventEnded ? "Event Ended" : "Submit Feedback",
+          isEventEnded ? "Submit Feedback" : "Feedback Closed",
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
