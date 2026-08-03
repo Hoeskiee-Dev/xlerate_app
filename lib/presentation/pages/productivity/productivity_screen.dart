@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:xlerate/presentation/pages/productivity/task_list_page.dart';
+
 class Task {
   String title;
   String description;
@@ -593,7 +595,10 @@ class _ProductivityScreenState extends State<ProductivityScreen> {
             ),
             GestureDetector(
               onTap: () {
-                // TODO: navigate to Task List screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TaskListPage()),
+                );
               },
               child: const Text(
                 'See All',

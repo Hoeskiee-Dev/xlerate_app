@@ -19,7 +19,7 @@ class MockProgramRepository implements ProgramsRepository {
     } on DioException catch (e) {
       if (e.response != null && e.response?.data != null) {
         return Result.failed(
-          "${e.response?.data['massage'] ?? "Failed to create new program!"}",
+          "${e.response?.data['message'] ?? "Failed to create new program!"}",
         );
       }
 
