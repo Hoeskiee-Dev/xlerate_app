@@ -54,4 +54,23 @@ class MockProgramRepository implements ProgramsRepository {
       return Result.failed("${e.message}");
     }
   }
+
+  @override
+  Future<Result<void>> joinProgram({
+    required List<String> joinedUserIds,
+    required String programId,
+  }) async {
+    try {
+      await _dio!.patch(
+        "$_baseURL/programs/$programId",
+        data: {
+          "joinedUserIds": joinedUserIds,
+        },
+      );
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      return Result.failed("${e.message}");
+    }
+  }
 }

@@ -9,6 +9,7 @@ import 'package:xlerate/presentation/pages/program/program_detail/methods/event_
 import 'package:xlerate/presentation/pages/program/program_detail/methods/feedback_button.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/description_section.dart';
 import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
+import 'package:xlerate/presentation/providers/programs/apply_program_provider.dart';
 import 'package:xlerate/presentation/providers/programs/program_detail_provider.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/apply_confirmation_sheet.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
@@ -28,6 +29,16 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
   // Local state to track whether the user has successfully registered/applied for the program
   bool hasApplied = false;
 
+  bool _checkIsEventEnded(String? endDateStr, String? startDateStr) {
+    final targetDateStr = endDateStr ?? startDateStr;
+    if (targetDateStr == null) return false;
+
+    final eventDate = DateTime.tryParse(targetDateStr);
+    if (eventDate == null) return false;
+
+    return DateTime.now().isAfter(eventDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch asynchronous program detail provider using the programId
@@ -38,11 +49,27 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
     // Watch current user state to access profile details and avatars
     final currentUser = ref.watch(userProvider);
 
+    final userId = currentUser!.id;
+
+    final applyState = ref.watch(applyProgramProvider);
+    final isApplying = applyState.isLoading;
+
+    final program = programDetailAsync.value;
+    final bool hasApplied =
+        program != null &&
+        userId != null &&
+        program.joinedUserIds.contains(userId);
+
     return Scaffold(
       body: programDetailAsync.when(
         data: (program) {
           // Localized display variable for program data updates
           var displayProgram = program;
+
+          final bool isEnded = _checkIsEventEnded(
+            displayProgram.endDate,
+            displayProgram.startDate,
+          );
 
           if (hasApplied) {}
 
@@ -62,27 +89,30 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
               verticalSpaces(16),
 
-              // --- FEEDBACK BUTTON ACTION ---
               feedbackButton(
-                isEventEnded: false,
-                onPressed: () {
-                  final formToLoad = displayProgram.feedbackForm;
-                  if (formToLoad != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FeedbackPage(form: formToLoad),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("No feedback form available."),
-                      ),
-                    );
-                  }
-                },
+                isEventEnded: isEnded,
+                onPressed: isEnded
+                    ? () {
+                        final formToLoad = displayProgram.feedbackForm;
+                        if (formToLoad != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  FeedbackPage(form: formToLoad),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("No feedback form available."),
+                            ),
+                          );
+                        }
+                      }
+                    : null,
               ),
+
               verticalSpaces(
                 100,
               ), // Bottom padding buffer to clear floating nav bars
@@ -129,11 +159,11 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
               child: ElevatedButton(
                 onPressed: null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  disabledBackgroundColor: Colors.green,
+                  backgroundColor: Colors.grey,
+                  disabledBackgroundColor: Colors.grey,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(24),
                   ),
                 ),
                 child: const Text(
@@ -150,21 +180,50 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
               isLoading: programDetailAsync.isLoading,
               onPressed: programDetailAsync.hasValue
                   ? () async {
+                      final currentProgram = programDetailAsync.asData!.value;
                       // 1. Await confirmation result from bottom sheet modal
-                      final result = await showModalBottomSheet<bool>(
+                      final confirm = await showModalBottomSheet<bool>(
                         context: context,
                         isScrollControlled: true,
                         backgroundColor: Colors.transparent,
                         builder: (context) => ApplyConfirmationSheet(
-                          program: programDetailAsync.asData!.value!,
+                          program: currentProgram,
                         ),
                       );
 
                       // 2. Trigger UI state update if application was confirmed successfully
-                      if (result == true) {
-                        setState(() {
-                          hasApplied = true;
-                        });
+                      if (confirm == true && context.mounted) {
+                        final success = await ref
+                            .read(applyProgramProvider.notifier)
+                            .applyProgram(
+                              program: currentProgram,
+                              userId: userId,
+                            );
+
+                        if (context.mounted) {
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Successfully applied to program! 🎉",
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            final errorMsg = ref
+                                .read(applyProgramProvider)
+                                .error;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  errorMsg?.toString() ?? "Failed to apply.",
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
                       }
                     }
                   : null,

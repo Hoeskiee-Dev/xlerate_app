@@ -5,4 +5,8 @@ abstract interface class ProgramsRepository {
   Future<Result<List<Program>>> getAllPrograms();
   Future<Result<Program>> getProgramDetails({required String id});
   Future<Result<void>> addProgram({required Program program});
+  Future<Result<void>> joinProgram({
+    required List<String> joinedUserIds,
+    required String programId,
+  });
 }

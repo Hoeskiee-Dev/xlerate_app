@@ -276,7 +276,7 @@ class _CreateFeedbackFormScreenState extends State<CreateFeedbackFormScreen> {
                   backgroundColor: Colors.green,
                 ),
               );
-              Navigator.pop(context);
+              Navigator.pop(context, newForm);
             },
             child: const Text(
               "Save & Publish",
