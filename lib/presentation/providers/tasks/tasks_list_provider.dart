@@ -7,7 +7,7 @@ import 'package:xlerate/presentation/providers/user_provider.dart';
 
 part 'tasks_list_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class TasksList extends _$TasksList {
   @override
   FutureOr<List<Task>> build() async {
@@ -30,6 +30,16 @@ class TasksList extends _$TasksList {
         throw Exception(msg);
       }(),
     };
+  }
+
+  // * for local state
+  void removeTaskFromState(String taskId) {
+    if (state.hasValue) {
+      final currentTasks = state.value ?? [];
+      state = AsyncData(
+        currentTasks.where((task) => task.id != taskId).toList(),
+      );
+    }
   }
 
   Future<void> refresh() async {

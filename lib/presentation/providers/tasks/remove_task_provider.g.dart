@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tasks_list_provider.dart';
+part of 'remove_task_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,43 @@ part of 'tasks_list_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(TasksList)
-final tasksListProvider = TasksListProvider._();
+@ProviderFor(RemoveTask)
+final removeTaskProvider = RemoveTaskProvider._();
 
-final class TasksListProvider
-    extends $AsyncNotifierProvider<TasksList, List<Task>> {
-  TasksListProvider._()
+final class RemoveTaskProvider
+    extends $AsyncNotifierProvider<RemoveTask, void> {
+  RemoveTaskProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'tasksListProvider',
+        name: r'removeTaskProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$tasksListHash();
+  String debugGetCreateSourceHash() => _$removeTaskHash();
 
   @$internal
   @override
-  TasksList create() => TasksList();
+  RemoveTask create() => RemoveTask();
 }
 
-String _$tasksListHash() => r'fc1c76e2d9525cd40b4a019d53ce7c538ea404a7';
+String _$removeTaskHash() => r'a17277be159937b9d11e91cb36d82893accbfecd';
 
-abstract class _$TasksList extends $AsyncNotifier<List<Task>> {
-  FutureOr<List<Task>> build();
+abstract class _$RemoveTask extends $AsyncNotifier<void> {
+  FutureOr<void> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Task>>, List<Task>>;
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Task>>, List<Task>>,
-              AsyncValue<List<Task>>,
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
               Object?,
               Object?
             >;

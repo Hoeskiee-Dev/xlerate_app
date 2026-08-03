@@ -8,9 +8,12 @@ List<Widget> tasksList({
   String selectedPriority = "",
   void Function(Task task, bool? isDone)? onStatusChanged,
   void Function(Task task)? onTap,
+  void Function(Task task)? onDismissed,
   VoidCallback? onRetry,
 }) {
   return tasksAsync.when(
+    skipLoadingOnRefresh: true,
+    skipLoadingOnReload: true,
     data: (tasks) {
       final filteredTasks = selectedPriority.isEmpty
           ? tasks
@@ -42,6 +45,11 @@ List<Widget> tasksList({
               task: task,
               onStatusChanged: (isDone) => onStatusChanged?.call(task, isDone),
               onTap: () => onTap?.call(task),
+              onDismissed: () {
+                if (onDismissed != null) {
+                  onDismissed(task);
+                }
+              },
             ),
           )
           .toList();
