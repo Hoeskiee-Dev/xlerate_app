@@ -10,9 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^1.0.7
+  image_picker: ^1.2.3
   shared_preferences: ^2.5.5
-
   cupertino_icons: ^1.0.8
   carousel_slider: ^5.1.2
   file_picker: ^8.0.6
@@ -29,17 +28,29 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^6.0.0
   build_runner: ^2.15.1
   freezed: ^3.2.6-dev.1
   json_serializable: ^6.14.1
   riverpod_generator: ^4.0.4
   riverpod_lint: ^3.1.4
-
-flutter:
-  uses-material-design: true
+  flutter_native_splash: ^2.4.1
 
 dependency_overrides:
   flutter_plugin_android_lifecycle: 2.0.23
   freezed_annotation: ^3.1.0
+
+# 1. Pushed flush left to the margin!
+flutter_native_splash:
+  color: "#FFFFFF" 
+  image: "assets/logo.png"
+  
+  android_12:
+    image: "assets/logo.png"
+    icon_background_color: "#FFFFFF"
+
+flutter:
+  uses-material-design: true
+  # 2. Added the assets section so Flutter can see your logo!
+  assets:
+    - assets/logo.png
