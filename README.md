@@ -174,7 +174,7 @@ Based on the current wireframes, the following screens are designed or in progre
 
 - **Framework:** Flutter
 - **Design:** Whimsical + Figma (wireframes → high-fidelity UI)
-- *(Backend, state management, and calendar/notification integrations — TBD as development progresses)*
+- Riverpod, Separation of Concern, MockAPI
 
 ## Getting Started
 
