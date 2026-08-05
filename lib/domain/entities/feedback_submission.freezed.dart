@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FeedbackSubmission {
 
- String get formId; String get programId; String get userId; List<FeedbackAnswer> get answers; DateTime get submittedAt;
+ String get formId; String get programId; String get userId; List<FeedbackAnswer> get answers; String get submittedAt;
 /// Create a copy of FeedbackSubmission
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $FeedbackSubmissionCopyWith<$Res>  {
   factory $FeedbackSubmissionCopyWith(FeedbackSubmission value, $Res Function(FeedbackSubmission) _then) = _$FeedbackSubmissionCopyWithImpl;
 @useResult
 $Res call({
- String formId, String programId, String userId, List<FeedbackAnswer> answers, DateTime submittedAt
+ String formId, String programId, String userId, List<FeedbackAnswer> answers, String submittedAt
 });
 
 
@@ -72,7 +72,7 @@ as String,programId: null == programId ? _self.programId : programId // ignore: 
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,answers: null == answers ? _self.answers : answers // ignore: cast_nullable_to_non_nullable
 as List<FeedbackAnswer>,submittedAt: null == submittedAt ? _self.submittedAt : submittedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as String,
   ));
 }
 
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  DateTime submittedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  String submittedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FeedbackSubmission() when $default != null:
 return $default(_that.formId,_that.programId,_that.userId,_that.answers,_that.submittedAt);case _:
@@ -178,7 +178,7 @@ return $default(_that.formId,_that.programId,_that.userId,_that.answers,_that.su
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  DateTime submittedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  String submittedAt)  $default,) {final _that = this;
 switch (_that) {
 case _FeedbackSubmission():
 return $default(_that.formId,_that.programId,_that.userId,_that.answers,_that.submittedAt);case _:
@@ -198,7 +198,7 @@ return $default(_that.formId,_that.programId,_that.userId,_that.answers,_that.su
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  DateTime submittedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String formId,  String programId,  String userId,  List<FeedbackAnswer> answers,  String submittedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _FeedbackSubmission() when $default != null:
 return $default(_that.formId,_that.programId,_that.userId,_that.answers,_that.submittedAt);case _:
@@ -226,7 +226,7 @@ class _FeedbackSubmission implements FeedbackSubmission {
   return EqualUnmodifiableListView(_answers);
 }
 
-@override final  DateTime submittedAt;
+@override final  String submittedAt;
 
 /// Create a copy of FeedbackSubmission
 /// with the given fields replaced by the non-null parameter values.
@@ -261,7 +261,7 @@ abstract mixin class _$FeedbackSubmissionCopyWith<$Res> implements $FeedbackSubm
   factory _$FeedbackSubmissionCopyWith(_FeedbackSubmission value, $Res Function(_FeedbackSubmission) _then) = __$FeedbackSubmissionCopyWithImpl;
 @override @useResult
 $Res call({
- String formId, String programId, String userId, List<FeedbackAnswer> answers, DateTime submittedAt
+ String formId, String programId, String userId, List<FeedbackAnswer> answers, String submittedAt
 });
 
 
@@ -285,7 +285,7 @@ as String,programId: null == programId ? _self.programId : programId // ignore: 
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,answers: null == answers ? _self._answers : answers // ignore: cast_nullable_to_non_nullable
 as List<FeedbackAnswer>,submittedAt: null == submittedAt ? _self.submittedAt : submittedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as String,
   ));
 }
 

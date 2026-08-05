@@ -32,4 +32,32 @@ class MockFeedbackRepository implements FeedbackRepository {
       return Result.failed("An unexpected error occurred: $e");
     }
   }
+
+  @override
+  Future<Result<bool>> hasUserSubmittedFeedback({
+    required String programId,
+    required String userId,
+  }) async {
+    try {
+      final response = await _dio!.get(
+        "$_baseURL/feedback_responses",
+        queryParameters: {
+          'programId': programId,
+          'userId': userId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List data = response.data as List;
+        final bool hasSubmitted = data.isNotEmpty;
+        return Result.success(hasSubmitted);
+      }
+
+      return const Result.failed("Failed to check feedback status");
+    } on DioException catch (e) {
+      return Result.failed(e.message ?? "Network error occurred");
+    } catch (e) {
+      return Result.failed("An unexpected error occurred: $e");
+    }
+  }
 }

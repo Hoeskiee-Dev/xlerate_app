@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:xlerate/domain/entities/question_type.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/domain/entities/feedback_answer.dart';
+import 'package:xlerate/domain/entities/feedback_submission.dart';
 import 'package:xlerate/domain/entities/saved_feedback_form.dart';
-import 'package:xlerate/domain/entities/saved_question.dart';
+import 'package:xlerate/presentation/providers/feedback/add_feedback_provider.dart';
+import 'package:xlerate/presentation/providers/usecases/submit_feedback.dart';
+import 'package:xlerate/presentation/providers/user_provider.dart';
 import 'widgets/feedback_header_widget.dart';
 import 'widgets/question_card_widget.dart';
 import 'widgets/feedback_submit_button.dart';
 
-class FeedbackPage extends StatefulWidget {
+class FeedbackPage extends ConsumerStatefulWidget {
   final SavedFeedbackForm form;
-  const FeedbackPage({super.key, required this.form});
+  final String programId;
+
+  const FeedbackPage({super.key, required this.form, required this.programId});
 
   @override
-  State<FeedbackPage> createState() => _FeedbackPageState();
+  ConsumerState<FeedbackPage> createState() => _FeedbackPageState();
 }
 
-class _FeedbackPageState extends State<FeedbackPage> {
+class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   final Map<String, dynamic> _answers = {};
 
   // Brand Colors
@@ -25,6 +31,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
   bool _isSubmitting = false;
 
   void _handleSubmit() async {
+    final currentUser = ref.read(userProvider);
+    final userId = currentUser?.id;
+
     // Validate: Check if every question has an answer
     bool allAnswered = widget.form.questions.asMap().keys.every((index) {
       final val = _answers[index.toString()];
@@ -59,35 +68,49 @@ class _FeedbackPageState extends State<FeedbackPage> {
       return;
     }
 
+    final formattedAnswers = _answers.entries.map((entry) {
+      return FeedbackAnswer(
+        questionId: entry.key,
+        answer: entry.value,
+      );
+    }).toList();
+
+    final submission = FeedbackSubmission(
+      formId: widget.form.id,
+      programId: widget.programId,
+      userId: userId!,
+      answers: formattedAnswers,
+      submittedAt: DateTime.now().millisecondsSinceEpoch.toString(),
+    );
+
     setState(() {
       _showErrors = false;
       _isSubmitting = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2));
+    final success = await ref
+        .read(addFeedbackProvider.notifier)
+        .submitFeedback(submission);
 
-    // Success state
     if (mounted) {
       setState(() => _isSubmitting = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.green.shade600,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text("Thank you! Your feedback helps us grow. 🚀"),
           ),
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text("Thank you! Your feedback helps us grow. 🚀"),
-              ),
-            ],
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Failed to submit feedback."),
           ),
-        ),
-      );
-      Navigator.pop(context);
+        );
+      }
     }
   }
 

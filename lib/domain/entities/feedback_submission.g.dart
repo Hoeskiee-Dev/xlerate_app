@@ -14,7 +14,7 @@ _FeedbackSubmission _$FeedbackSubmissionFromJson(Map<String, dynamic> json) =>
       answers: (json['answers'] as List<dynamic>)
           .map((e) => FeedbackAnswer.fromJson(e as Map<String, dynamic>))
           .toList(),
-      submittedAt: DateTime.parse(json['submittedAt'] as String),
+      submittedAt: json['submittedAt'] as String,
     );
 
 Map<String, dynamic> _$FeedbackSubmissionToJson(_FeedbackSubmission instance) =>
@@ -23,5 +23,5 @@ Map<String, dynamic> _$FeedbackSubmissionToJson(_FeedbackSubmission instance) =>
       'programId': instance.programId,
       'userId': instance.userId,
       'answers': instance.answers.map((e) => e.toJson()).toList(),
-      'submittedAt': instance.submittedAt.toIso8601String(),
+      'submittedAt': instance.submittedAt,
     };

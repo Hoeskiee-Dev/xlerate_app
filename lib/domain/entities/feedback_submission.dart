@@ -12,7 +12,7 @@ abstract class FeedbackSubmission with _$FeedbackSubmission {
     required String programId,
     required String userId,
     required List<FeedbackAnswer> answers,
-    required DateTime submittedAt,
+    required String submittedAt,
   }) = _FeedbackSubmission;
 
   factory FeedbackSubmission.fromJson(Map<String, dynamic> json) =>
