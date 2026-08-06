@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/presentation/providers/programs/attended_program_provider.dart';
+import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 import 'widgets/activity.dart';
 import 'widgets/badge_card.dart';
 import 'widgets/logout_button.dart';
 import 'widgets/profile_header.dart';
 import 'edit_profile_screen.dart';
-import 'package:xlerate/domain/entities/user_model.dart';
 import 'registered_programs_screen.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
@@ -15,6 +16,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
+    final joinedPrograms = ref.watch(attendedProgramProvider);
+    final tasksAsync = ref.watch(tasksListProvider);
 
     if (user == null) {
       return const Scaffold(
@@ -26,7 +29,11 @@ class ProfileScreen extends ConsumerWidget {
       );
     }
 
-    final int registeredCount = user.joinedPrograms?.length ?? 0;
+    final int registeredCount = joinedPrograms.value?.length ?? 0;
+    final int completedTasksCount = tasksAsync.maybeWhen(
+      data: (tasks) => tasks.where((task) => task.isDone == true).length,
+      orElse: () => 0,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -85,9 +92,9 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: ActivityCard(
-                    number: "27",
+                    number: completedTasksCount.toString(),
                     title: "Tasks Completed",
                     icon: Icons.task_alt,
                   ),
