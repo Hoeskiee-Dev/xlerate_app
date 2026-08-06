@@ -17,10 +17,7 @@ import 'package:xlerate/presentation/pages/program/program_detail/widgets/apply_
 import 'package:xlerate/presentation/providers/programs/programs_list_provider.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
-/// Screen responsible for displaying detailed program information, schedule details,
-/// attendee lists, feedback action hooks, and program registration workflows.
 class ProgramDetailPage extends ConsumerStatefulWidget {
-  // Unique identifier for fetching specific program data
   final String programId;
   const ProgramDetailPage({super.key, required this.programId});
 
@@ -29,7 +26,6 @@ class ProgramDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
-  // Local state to track whether the user has successfully registered/applied for the program
   bool hasApplied = false;
   bool hasSubmittedFeedback = false;
 
@@ -67,12 +63,10 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch asynchronous program detail provider using the programId
     final programDetailAsync = ref.watch(
       programDetailProvider(id: widget.programId),
     );
 
-    // Watch current user state to access profile details and avatars
     final currentUser = ref.watch(userProvider);
 
     final userId = currentUser?.id;
@@ -94,7 +88,6 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
     return Scaffold(
       body: programDetailAsync.when(
         data: (program) {
-          // Localized display variable for program data updates
           var displayProgram = program;
 
           final bool isEnded = _checkIsEventEnded(
@@ -159,17 +152,15 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
               verticalSpaces(
                 100,
-              ), // Bottom padding buffer to clear floating nav bars
+              ),
             ],
           );
         },
 
-        // Loading state indicator
         loading: () => const Center(
           child: CircularProgressIndicator(),
         ),
 
-        // Error handling view with friendly messaging
         error: (error, stack) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Center(
@@ -224,7 +215,6 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
               onPressed: programDetailAsync.hasValue
                   ? () async {
                       final currentProgram = programDetailAsync.asData!.value;
-                      // 1. Await confirmation result from bottom sheet modal
                       final confirm = await showModalBottomSheet<bool>(
                         context: context,
                         isScrollControlled: true,
@@ -234,7 +224,6 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
                         ),
                       );
 
-                      // 2. Trigger UI state update if application was confirmed successfully
                       if (confirm == true && context.mounted) {
                         final success = await ref
                             .read(applyProgramProvider.notifier)

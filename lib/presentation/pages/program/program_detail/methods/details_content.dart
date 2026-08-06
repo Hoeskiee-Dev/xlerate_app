@@ -103,12 +103,26 @@ Widget detailsContent(Program program) {
                   verticalSpaces(4),
                   GestureDetector(
                     onTap: () async {
-                      final Uri url = Uri.parse(program.url!);
-                      // Launch the URL in the device's default browser
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url);
-                      } else {
-                        debugPrint('Could not launch $url');
+                      String urlString = program.url!.trim();
+
+                      if (!urlString.startsWith('http://') &&
+                          !urlString.startsWith('https://')) {
+                        urlString = 'https://$urlString';
+                      }
+
+                      final Uri url = Uri.parse(urlString);
+
+                      try {
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          debugPrint('Could not launch $url');
+                        }
+                      } catch (e) {
+                        debugPrint('Error launching url: $e');
                       }
                     },
                     child: Text(
@@ -128,7 +142,6 @@ Widget detailsContent(Program program) {
           ],
         ),
       ],
-      // --------------------------------
     ],
   );
 }
