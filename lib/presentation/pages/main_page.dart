@@ -97,13 +97,15 @@ class _MainPageState extends ConsumerState<MainPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          color: isSelected
+              ? Colors.deepOrangeAccent.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(60),
         ),
         child: Icon(
           icon,
           size: 28,
-          color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
+          color: isSelected ? Colors.deepOrange : Colors.grey.shade400,
         ),
       ),
     );
