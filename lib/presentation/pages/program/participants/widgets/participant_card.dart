@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class ParticipantCard extends StatelessWidget {
@@ -10,9 +13,34 @@ class ParticipantCard extends StatelessWidget {
     required this.brandOrange,
   });
 
+  ImageProvider? _getAvatarImage(String? imageSource) {
+    if (imageSource == null || imageSource.trim().isEmpty) return null;
+
+    final trimmed = imageSource.trim();
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return NetworkImage(trimmed);
+    }
+
+    try {
+      String cleanBase64 = trimmed;
+      if (trimmed.contains(',')) {
+        cleanBase64 = trimmed.split(',').last;
+      }
+
+      final Uint8List bytes = base64Decode(cleanBase64);
+      return MemoryImage(bytes);
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isAttended = participant['status'] == 'Attended';
+    final name = participant['name'] ?? 'Unknown';
+    final email = participant['email'] ?? '';
+    final avatarImage = _getAvatarImage(participant['image']);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -39,7 +67,18 @@ class ParticipantCard extends StatelessWidget {
           ),
           child: CircleAvatar(
             radius: 24,
-            backgroundImage: NetworkImage(participant['image']),
+            backgroundColor: brandOrange.withOpacity(0.1),
+            backgroundImage: avatarImage,
+            child: avatarImage == null
+                ? Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : '?',
+                    style: TextStyle(
+                      color: brandOrange,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  )
+                : null,
           ),
         ),
         title: Text(

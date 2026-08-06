@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/core/error_helper.dart';
+import 'package:xlerate/domain/usecases/check_feedback_submitted/check_feedback_submitted.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/apply_button.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/methods/attendies.dart';
@@ -9,6 +10,7 @@ import 'package:xlerate/presentation/pages/program/program_detail/methods/event_
 import 'package:xlerate/presentation/pages/program/program_detail/methods/feedback_button.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/description_section.dart';
 import 'package:xlerate/presentation/pages/feedback/feedback_page.dart';
+import 'package:xlerate/presentation/providers/feedback/check_feedback_submitted_status.dart';
 import 'package:xlerate/presentation/providers/programs/apply_program_provider.dart';
 import 'package:xlerate/presentation/providers/programs/program_detail_provider.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/apply_confirmation_sheet.dart';
@@ -28,6 +30,7 @@ class ProgramDetailPage extends ConsumerStatefulWidget {
 class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
   // Local state to track whether the user has successfully registered/applied for the program
   bool hasApplied = false;
+  bool hasSubmittedFeedback = false;
 
   bool _checkIsEventEnded(String? endDateStr, String? startDateStr) {
     final targetDateStr = endDateStr ?? startDateStr;
@@ -40,6 +43,28 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkFeedbackStatus();
+    });
+  }
+
+  void _checkFeedbackStatus() {
+    final userId = ref.read(userProvider)?.id;
+    if (userId != null) {
+      ref
+          .read(checkFeedbackSubmittedStatusProvider.notifier)
+          .checkFeedbackStatus(
+            params: CheckFeedbackSubmittedParams(
+              programId: widget.programId,
+              userId: userId,
+            ),
+          );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Watch asynchronous program detail provider using the programId
     final programDetailAsync = ref.watch(
@@ -49,7 +74,12 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
     // Watch current user state to access profile details and avatars
     final currentUser = ref.watch(userProvider);
 
-    final userId = currentUser!.id;
+    final userId = currentUser?.id;
+
+    final checkFeedbackState = ref.watch(checkFeedbackSubmittedStatusProvider);
+    final bool isSubmittedFromApi = checkFeedbackState.value ?? false;
+
+    final bool isFeedbackSubmitted = hasSubmittedFeedback || isSubmittedFromApi;
 
     final applyState = ref.watch(applyProgramProvider);
     final isApplying = applyState.isLoading;
@@ -91,17 +121,28 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
               feedbackButton(
                 isEventEnded: isEnded,
-                onPressed: isEnded
-                    ? () {
+                isSubmitted: isFeedbackSubmitted,
+                onPressed: (isEnded && !isFeedbackSubmitted)
+                    ? () async {
                         final formToLoad = displayProgram.feedbackForm;
                         if (formToLoad != null) {
-                          Navigator.push(
+                          final result = await Navigator.push<bool>(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  FeedbackPage(form: formToLoad),
+                              builder: (context) => FeedbackPage(
+                                form: formToLoad,
+                                programId: widget.programId,
+                              ),
                             ),
                           );
+
+                          if (result == true && mounted) {
+                            setState(() {
+                              hasSubmittedFeedback = true;
+
+                              _checkFeedbackStatus();
+                            });
+                          }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -197,7 +238,7 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
                             .read(applyProgramProvider.notifier)
                             .applyProgram(
                               program: currentProgram,
-                              userId: userId,
+                              userId: userId!,
                             );
 
                         if (context.mounted) {
