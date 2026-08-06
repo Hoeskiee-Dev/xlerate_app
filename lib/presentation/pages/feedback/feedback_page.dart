@@ -4,7 +4,6 @@ import 'package:xlerate/domain/entities/feedback_answer.dart';
 import 'package:xlerate/domain/entities/feedback_submission.dart';
 import 'package:xlerate/domain/entities/saved_feedback_form.dart';
 import 'package:xlerate/presentation/providers/feedback/add_feedback_provider.dart';
-import 'package:xlerate/presentation/providers/usecases/submit_feedback.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 import 'widgets/feedback_header_widget.dart';
 import 'widgets/question_card_widget.dart';
@@ -102,7 +101,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
             content: Text("Thank you! Your feedback helps us grow. 🚀"),
           ),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

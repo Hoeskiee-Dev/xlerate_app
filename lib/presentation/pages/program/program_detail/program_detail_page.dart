@@ -106,24 +106,20 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
           return ListView(
             children: [
-              // --- EVENT HEADER BANNER ---
               eventHeader(context, displayProgram),
 
-              // --- EVENT TITLE AND METADATA ---
               eventTitle(displayProgram),
 
-              // --- ATTENDEES THUMBNAILS LIST ---
               attendies(context, displayProgram),
 
-              // --- PROGRAM DESCRIPTION SECTION ---
               DescriptionSection(program: displayProgram),
 
               verticalSpaces(16),
 
               feedbackButton(
-                isEventEnded: isEnded,
+                isEventEnded: true,
                 isSubmitted: isFeedbackSubmitted,
-                onPressed: (isEnded && !isFeedbackSubmitted)
+                onPressed: (true && !isFeedbackSubmitted)
                     ? () async {
                         final formToLoad = displayProgram.feedbackForm;
                         if (formToLoad != null) {
@@ -140,7 +136,13 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
                           if (result == true && mounted) {
                             setState(() {
                               hasSubmittedFeedback = true;
+                            });
 
+                            ref.invalidate(
+                              checkFeedbackSubmittedStatusProvider,
+                            );
+
+                            Future.microtask(() {
                               _checkFeedbackStatus();
                             });
                           }
