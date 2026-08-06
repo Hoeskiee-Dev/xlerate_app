@@ -29,6 +29,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
           // * Announcement Banner
           announcementBanner(
             context,
+            ref,
             currentIndex: _currentIndex,
             onPageChanged: (index) {
               setState(() {

@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xlerate/domain/usecases/change_task_status/change_task_status_params.dart';
 import 'package:xlerate/presentation/pages/productivity/create_task_page.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_chips.dart';
+import 'package:xlerate/presentation/pages/productivity/methods/task_detail_dialog.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/tasks_list.dart';
 import 'package:xlerate/presentation/providers/tasks/remove_task_provider.dart';
+import 'package:xlerate/presentation/providers/tasks/task_search_query.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/update_task_status_provider.dart';
 
@@ -30,6 +32,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(tasksListProvider);
+    final searchQuery = ref.watch(taskSearchQueryProvider);
 
     return Scaffold(
       body: ListView(
@@ -40,8 +43,11 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
           // * Search bar
           taskSearchBar(
             controller: searchController,
-            onSubmitted: (value) {
-              // ! TODO : Implement notifier for search query
+            onChanged: (value) {
+              ref.read(taskSearchQueryProvider.notifier).setQuery(value);
+            },
+            onClear: () {
+              ref.read(taskSearchQueryProvider.notifier).clear();
             },
           ),
 
@@ -71,7 +77,12 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
 
           // * Tasks list
           ...tasksList(
+            context: context,
+            onTap: (task) {
+              showTaskDetailDialog(context, task);
+            },
             tasksAsync: tasksAsync,
+            searchQuery: searchQuery,
             selectedPriority: selectedPriority,
             onStatusChanged: (task, isDone) {
               if (isDone == null) return;
@@ -94,7 +105,18 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
             },
             onRetry: () => ref.read(tasksListProvider.notifier).refresh(),
             onDelete: (task) {
+              ref.read(tasksListProvider.notifier).removeTaskFromState(task.id);
+
               ref.read(removeTaskProvider.notifier).removeTask(params: task.id);
+
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                const SnackBar(
+                  content: Text("Task deleted!"),
+                  duration: Duration(seconds: 1),
+                ),
+              );
             },
             onEdit: (task) {
               Navigator.push(

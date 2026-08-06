@@ -14,6 +14,7 @@ import 'package:xlerate/presentation/providers/feedback/check_feedback_submitted
 import 'package:xlerate/presentation/providers/programs/apply_program_provider.dart';
 import 'package:xlerate/presentation/providers/programs/program_detail_provider.dart';
 import 'package:xlerate/presentation/pages/program/program_detail/widgets/apply_confirmation_sheet.dart';
+import 'package:xlerate/presentation/providers/programs/programs_list_provider.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
 /// Screen responsible for displaying detailed program information, schedule details,
@@ -243,6 +244,12 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
 
                         if (context.mounted) {
                           if (success) {
+                            ref.read(programsListProvider.notifier).refresh();
+
+                            ref.invalidate(
+                              programDetailProvider(id: widget.programId),
+                            );
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:xlerate/presentation/pages/register_page.dart';
+import 'package:xlerate/presentation/pages/login_page.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 
 /// A reusable widget that triggers a confirmation dialog before logging the user out,
@@ -76,7 +76,7 @@ class LogoutButton extends ConsumerWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const RegisterPage(),
+                    builder: (context) => const LoginPage(),
                   ),
                   (route) => false,
                 );

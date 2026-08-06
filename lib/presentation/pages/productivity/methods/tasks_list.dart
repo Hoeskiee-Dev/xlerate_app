@@ -5,7 +5,9 @@ import 'package:xlerate/presentation/pages/productivity/methods/task_card.dart';
 
 List<Widget> tasksList({
   required AsyncValue<List<Task>> tasksAsync,
+  required BuildContext context,
   String selectedPriority = "",
+  String searchQuery = "",
   void Function(Task task, bool? isDone)? onStatusChanged,
   void Function(Task task)? onTap,
   void Function(Task task)? onDelete,
@@ -16,15 +18,17 @@ List<Widget> tasksList({
     skipLoadingOnRefresh: true,
     skipLoadingOnReload: true,
     data: (tasks) {
-      final filteredTasks = selectedPriority.isEmpty
-          ? tasks
-          : tasks
-                .where(
-                  (t) =>
-                      t.priority.name.toLowerCase() ==
-                      selectedPriority.toLowerCase(),
-                )
-                .toList();
+      final filteredTasks = tasks.where((t) {
+        final matchesPriority =
+            selectedPriority.isEmpty ||
+            t.priority.name.toLowerCase() == selectedPriority.toLowerCase();
+
+        final matchesSearch =
+            searchQuery.isEmpty ||
+            t.title.toLowerCase().contains(searchQuery.toLowerCase());
+
+        return matchesPriority && matchesSearch;
+      }).toList();
 
       if (filteredTasks.isEmpty) {
         return const [
@@ -40,12 +44,20 @@ List<Widget> tasksList({
         ];
       }
 
+      filteredTasks.sort((a, b) {
+        if (a.isDone == b.isDone) {
+          return a.endDate.compareTo(b.endDate);
+        }
+        return a.isDone ? 1 : -1;
+      });
+
       return filteredTasks
           .map(
             (task) => taskCard(
+              context: context,
               task: task,
               onStatusChanged: (isDone) => onStatusChanged?.call(task, isDone),
-              onTap: () => onTap?.call(task),
+              onTap: onTap != null ? () => onTap(task) : null,
               onDeletePressed: () => onDelete?.call(task),
               onEditPressed: () => onEdit?.call(task),
             ),

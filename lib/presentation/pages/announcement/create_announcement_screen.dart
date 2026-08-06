@@ -57,9 +57,9 @@ class _CreateAnnouncementScreenState
       final newAnnouncement = Announcement(
         title: titleController.text.trim(),
         description: messageController.text.trim(),
-        date: "3 Aug 2026",
+        date: DateTime.now().toIso8601String(),
         type: priority,
-        imageBase64: _imageBase64,
+        imageBase64: "https://picsum.photos/400/200",
       );
 
       await ref

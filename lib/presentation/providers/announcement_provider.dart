@@ -9,7 +9,7 @@ final announcementListProvider = FutureProvider<List<Announcement>>((
 ) async {
   final dio = ref.watch(dioProvider);
   final response = await dio.get(
-    'https://6a69e9dcb2789286ad712ba3.mockapi.io/announcements',
+    'https://6a69e9dcb2789286ad712ba3.mockapi.io/api/v1/announcements',
   );
 
   final List<dynamic> data = response.data;
@@ -28,7 +28,7 @@ class AnnouncementActions {
     final dio = ref.read(dioProvider);
 
     await dio.post(
-      'https://6a69e9dcb2789286ad712ba3.mockapi.io/announcements',
+      'https://6a69e9dcb2789286ad712ba3.mockapi.io/api/v1/announcements',
       data: newAnnouncement.toJson(),
     );
 
