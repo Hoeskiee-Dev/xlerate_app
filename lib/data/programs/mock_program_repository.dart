@@ -73,4 +73,26 @@ class MockProgramRepository implements ProgramsRepository {
       return Result.failed("${e.message}");
     }
   }
+
+  @override
+  Future<Result<void>> editProgram({required Program program}) async {
+    try {
+      await _dio!.put(
+        '$_baseURL/programs/${program.id}',
+        data: program.toJson(),
+      );
+
+      return Result.success(null);
+    } on DioException catch (e) {
+      if (e.response != null && e.response?.data != null) {
+        return Result.failed(
+          "${e.response?.data['message'] ?? "Failed to update program!"}",
+        );
+      }
+
+      return Result.failed("${e.message}");
+    } catch (e) {
+      return Result.failed("Internal error : $e");
+    }
+  }
 }

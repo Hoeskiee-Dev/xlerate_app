@@ -9,4 +9,5 @@ abstract interface class ProgramsRepository {
     required List<String> joinedUserIds,
     required String programId,
   });
+  Future<Result<void>> editProgram({required Program program});
 }

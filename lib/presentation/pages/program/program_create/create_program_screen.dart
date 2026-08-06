@@ -5,8 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/domain/entities/saved_feedback_form.dart';
 import 'package:xlerate/domain/usecases/create_program/create_program_params.dart';
+import 'package:xlerate/domain/usecases/edit_program/edit_program_params.dart';
 import 'package:xlerate/presentation/providers/programs/add_program_provider.dart';
 import 'package:xlerate/presentation/pages/feedback/create_feedback_form_screen.dart';
+import 'package:xlerate/presentation/providers/programs/program_detail_provider.dart';
+import 'package:xlerate/presentation/providers/programs/programs_list_provider.dart';
+import 'package:xlerate/presentation/providers/programs/update_program_provider.dart';
 
 // ---  NEW CUSTOM SECTION IMPORTS ---
 import 'widgets/sections/event_details_section.dart';
@@ -17,7 +21,10 @@ import 'widgets/sections/rewards_section.dart';
 import 'widgets/sections/administration_section.dart';
 
 class CreateProgramScreen extends ConsumerStatefulWidget {
-  const CreateProgramScreen({super.key});
+  final Program? programToEdit;
+
+  const CreateProgramScreen({super.key, this.programToEdit});
+
   @override
   ConsumerState<CreateProgramScreen> createState() =>
       _CreateProgramScreenState();
@@ -84,22 +91,110 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
     'Time Management',
   ];
 
+  bool get _isEditMode => widget.programToEdit != null;
+
+  @override
+  void initState() {
+    super.initState();
+    // 💡 Pre-fill data jika masuk dalam Mode Edit
+    if (_isEditMode) {
+      _populateDataForEditing(widget.programToEdit!);
+    }
+  }
+
+  void _populateDataForEditing(Program program) {
+    _titleController.text = program.title;
+    _descriptionController.text = program.description;
+    _hostController.text = program.host ?? '';
+    _speakerController.text = program.speaker ?? '';
+    _locationController.text = program.location ?? '';
+    _urlController.text = program.url ?? '';
+    _eligibilityController.text = program.eligibility ?? '';
+    _feeController.text = program.fee != null ? program.fee.toString() : '';
+    _totalSeatsController.text = program.totalSeats != null
+        ? program.totalSeats.toString()
+        : '';
+    _xpAmountController.text = program.xpAmount != null
+        ? program.xpAmount.toString()
+        : '';
+    _extraRewardController.text = program.extraReward ?? '';
+
+    _isFree = program.isFree;
+    _locationType = program.locationType ?? 'In-Person';
+    _isMultiDay = program.endDate != null && program.endDate!.isNotEmpty;
+
+    _offersCertificate = program.offersCertificate;
+    _offersBadge = program.offersBadge;
+    _offersMicroScholarships = program.offersMicroScholarships;
+    _offersLetterOfRecommendation = program.offersLetterOfRecommendation;
+    _offersPhysicalSwags = program.offersPhysicalSwags;
+    _offersXleratePoints = program.offersXleratePoints;
+
+    if (program.tag.isNotEmpty) {
+      _selectedTags.addAll(program.tag.split(', ').map((e) => e.trim()));
+    }
+    _selectedSkills.addAll(program.skills);
+
+    _startDate = _parseDate(program.startDate);
+    _endDate = _parseDate(program.endDate);
+    _registrationDeadLine = _parseDate(program.registrationDeadLine);
+    _selectedTime = _parseTime(program.time);
+
+    _createFeedback = program.feedbackForm != null;
+  }
+
+  TimeOfDay? _parseTime(String? timeStr) {
+    if (timeStr == null || timeStr.isEmpty) return null;
+    try {
+      final parts = timeStr.split(':');
+      if (parts.length >= 2) {
+        final hour = int.parse(parts[0]);
+        final minute = int.parse(parts[1].split(' ')[0]);
+        return TimeOfDay(hour: hour, minute: minute);
+      }
+    } catch (_) {}
+    return const TimeOfDay(hour: 9, minute: 0);
+  }
+
+  DateTime? _parseDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+
+    try {
+      final parts = dateStr.split('/');
+      if (parts.length == 3) {
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        var year = int.parse(parts[2]);
+
+        if (year < 100) {
+          year += 2000;
+        }
+        return DateTime(year, month, day);
+      }
+    } catch (_) {}
+
+    return DateTime.tryParse(dateStr);
+  }
+
   // --- Helpers ---
   Future<void> _selectStartDate(BuildContext context) async {
+    final initial = _startDate ?? DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: initial,
+      firstDate: DateTime(2000),
       lastDate: DateTime(2030),
     );
     if (picked != null) {
       setState(() {
         _startDate = picked;
         if (_registrationDeadLine != null &&
-            _registrationDeadLine!.isAfter(_startDate!))
+            _registrationDeadLine!.isAfter(_startDate!)) {
           _registrationDeadLine = null;
-        if (_endDate != null && _endDate!.isBefore(_startDate!))
+        }
+        if (_endDate != null && _endDate!.isBefore(_startDate!)) {
           _endDate = null;
+        }
       });
     }
   }
@@ -144,7 +239,10 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
 
   String _formatDate(DateTime? date) {
     if (date == null) return 'Select Date';
-    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().substring(2)}';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = (date.year % 100).toString().padLeft(2, '0');
+    return '$day/$month/$year';
   }
 
   void _showErrorSnackBar(String message) {
@@ -175,9 +273,9 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'New Program',
-          style: TextStyle(
+        title: Text(
+          _isEditMode ? 'Edit Program' : 'New Program',
+          style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -325,9 +423,9 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
                     elevation: 0,
                   ),
                   onPressed: _submitForm,
-                  child: const Text(
-                    'Publish Program',
-                    style: TextStyle(
+                  child: Text(
+                    _isEditMode ? 'Save Changes' : 'Publish Program',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -358,9 +456,9 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       return;
     }
 
-    SavedFeedbackForm? createdFeedbackForm;
+    SavedFeedbackForm? createdFeedbackForm = widget.programToEdit?.feedbackForm;
 
-    if (_createFeedback) {
+    if (_createFeedback && createdFeedbackForm == null) {
       final result = await Navigator.push<SavedFeedbackForm>(
         context,
         MaterialPageRoute(
@@ -376,7 +474,8 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       createdFeedbackForm = result;
     }
 
-    final newProgram = Program(
+    final programData = Program(
+      id: _isEditMode ? widget.programToEdit!.id : null,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       host: _hostController.text.trim(),
@@ -406,43 +505,71 @@ class _CreateProgramScreenState extends ConsumerState<CreateProgramScreen> {
       extraReward: _extraRewardController.text.trim().isNotEmpty
           ? _extraRewardController.text.trim()
           : null,
-      imageUrl:
-          'https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400',
+      imageUrl: _isEditMode
+          ? widget.programToEdit!.imageUrl
+          : 'https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400',
       imageFile: _selectedImage,
       totalSeats: _totalSeatsController.text.trim().isEmpty
           ? null
           : int.tryParse(_totalSeatsController.text.trim()),
-
       url: _urlController.text.trim().isEmpty
           ? null
           : _urlController.text.trim(),
       feedbackForm: createdFeedbackForm,
+      joinedUserIds: _isEditMode ? widget.programToEdit!.joinedUserIds : [],
     );
 
-    final params = CreateProgramParams(program: newProgram);
-    final errorMessage = await ref
-        .read(addProgramProvider.notifier)
-        .submitProgram(params: params);
+    if (_isEditMode) {
+      final editParams = EditProgramParams(program: programData);
+      final success = await ref
+          .read(updateProgramProvider.notifier)
+          .updateProgram(program: editParams);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (errorMessage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 10),
-              Text('Program Published Successfully!'),
-            ],
+      if (success) {
+        Navigator.pop(context, true);
+
+        Future.microtask(() {
+          if (widget.programToEdit?.id != null) {
+            ref.invalidate(
+              programDetailProvider(id: widget.programToEdit!.id!),
+            );
+          }
+          ref.invalidate(programsListProvider);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Program Updated Successfully!'),
+            backgroundColor: Colors.green,
           ),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
-      Navigator.pop(context, true);
+        );
+      } else {
+        final updateState = ref.read(updateProgramProvider);
+        final errorDetails =
+            updateState.error?.toString() ?? 'Failed to update program.';
+        _showErrorSnackBar(errorDetails);
+      }
     } else {
-      _showErrorSnackBar('Failed to publish program: $errorMessage');
+      final createParams = CreateProgramParams(program: programData);
+      final errorMessage = await ref
+          .read(addProgramProvider.notifier)
+          .submitProgram(params: createParams);
+
+      if (!mounted) return;
+
+      if (errorMessage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Program Published Successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, true);
+      } else {
+        _showErrorSnackBar('Failed to publish program: $errorMessage');
+      }
     }
   }
 }

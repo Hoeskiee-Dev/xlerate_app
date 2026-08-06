@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/presentation/misc/methods.dart';
+import 'package:xlerate/presentation/pages/program/program_create/create_program_screen.dart';
 
 Widget eventHeader(BuildContext context, Program program) => Stack(
   children: [
@@ -40,6 +41,29 @@ Widget eventHeader(BuildContext context, Program program) => Stack(
             ),
           ),
           Spacer(),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateProgramScreen(
+                    programToEdit: program,
+                  ),
+                ),
+              );
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.grey.shade400.withOpacity(0.75),
+              child: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ),
+
+          horizontalSpaces(16),
+
           GestureDetector(
             onTap: () {
               // ! TODO : Implement add to favorite feature
