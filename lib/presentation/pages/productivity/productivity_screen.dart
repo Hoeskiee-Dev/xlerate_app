@@ -5,6 +5,7 @@ import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/misc/colors.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_detail_dialog.dart';
 import 'package:xlerate/presentation/pages/productivity/task_list_page.dart';
+import 'package:xlerate/presentation/providers/tasks/streak_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 
 class ProductivityScreen extends ConsumerStatefulWidget {
@@ -235,6 +236,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
     final todayTasks = _filterTodayTasks(allTasks);
     final completedCount = todayTasks.where((t) => t.isDone).length;
     final totalCount = todayTasks.length;
+    final streakCount = ref.watch(streakProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +271,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
           children: [
             _buildStatCard(
               icon: Icons.local_fire_department,
-              value: '$weeklyStreak days',
+              value: '$streakCount days',
               label: 'Current streak',
               color: Colors.orange,
             ),
