@@ -150,7 +150,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                             child: Container(
                               margin: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
-                                color: Colors.deepPurple,
+                                color: Colors.deepOrangeAccent,
                                 borderRadius: BorderRadius.circular(18),
                               ),
                             ),
@@ -274,7 +274,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
           child: LinearProgressIndicator(
             value: totalCount == 0 ? 0 : completedCount / totalCount,
             backgroundColor: Colors.grey[300],
-            color: Colors.deepPurple,
+            color: Colors.deepOrangeAccent,
             minHeight: 8,
           ),
         ),
@@ -300,7 +300,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                   ? '0%'
                   : '${((completedCount / totalCount) * 100).round()}%',
               label: 'Completion rate',
-              color: Colors.deepPurple,
+              color: Colors.deepOrangeAccent,
             ),
           ],
         ),
@@ -323,7 +323,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
               child: const Text(
                 'See All',
                 style: TextStyle(
-                  color: Colors.deepPurple,
+                  color: Colors.deepOrangeAccent,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -473,15 +473,18 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.deepPurple.withOpacity(0.08),
+        color: Colors.deepOrangeAccent.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          const Icon(Icons.emoji_objects, color: Colors.deepPurple),
+          const Icon(Icons.emoji_objects, color: Colors.deepOrangeAccent),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(tip, style: const TextStyle(color: Colors.deepPurple)),
+            child: Text(
+              tip,
+              style: const TextStyle(color: Colors.deepOrangeAccent),
+            ),
           ),
         ],
       ),
@@ -582,7 +585,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
 
         Row(
           children: [
-            const Icon(Icons.check, size: 14, color: Colors.deepPurple),
+            const Icon(Icons.check, size: 14, color: Colors.deepOrangeAccent),
             const SizedBox(width: 4),
             Text(
               'Task Due',
@@ -593,7 +596,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
               width: 10,
               height: 10,
               decoration: const BoxDecoration(
-                color: Colors.deepPurple,
+                color: Colors.deepOrangeAccent,
                 shape: BoxShape.circle,
               ),
             ),
@@ -702,7 +705,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
             height: 30,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.deepPurple, width: 2),
+              border: Border.all(color: Colors.deepOrangeAccent, width: 2),
             ),
           ),
         if (isProgramDay)
@@ -710,7 +713,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
             width: 28,
             height: 28,
             decoration: const BoxDecoration(
-              color: Colors.deepPurple,
+              color: Colors.deepOrangeAccent,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -734,7 +737,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
           const Positioned(
             top: 2,
             right: 8,
-            child: Icon(Icons.check, size: 12, color: Colors.deepPurple),
+            child: Icon(Icons.check, size: 12, color: Colors.deepOrangeAccent),
           ),
       ],
     );
@@ -757,14 +760,14 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.deepPurple.shade50,
+              color: Colors.deepOrangeAccent,
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 programDate != null ? '${programDate.day}' : '-',
                 style: const TextStyle(
-                  color: Colors.deepPurple,
+                  color: Colors.deepOrangeAccent,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -870,7 +873,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
-                      color: Colors.deepPurple,
+                      color: Colors.deepOrangeAccent,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -880,7 +883,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(
                         Icons.event,
-                        color: Colors.deepPurple,
+                        color: Colors.deepOrangeAccent,
                       ),
                       title: Text(p.title),
                       subtitle: Text(p.time),
