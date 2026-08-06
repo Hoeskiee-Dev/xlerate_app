@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:xlerate/presentation/providers/user_provider.dart';
 import 'package:xlerate/presentation/providers/announcement_provider.dart';
 import 'package:xlerate/domain/entities/announcement.dart';
@@ -110,7 +111,6 @@ class AnnouncementScreen extends ConsumerWidget {
   }
 }
 
-// --- REUSABLE CARD WIDGET ---
 class AnnouncementCard extends StatelessWidget {
   final Announcement announcement;
 
@@ -118,6 +118,13 @@ class AnnouncementCard extends StatelessWidget {
     super.key,
     required this.announcement,
   });
+
+  String formatDate(String rawDate) {
+    final parsedDate = DateTime.tryParse(rawDate);
+    if (parsedDate == null) return rawDate;
+
+    return DateFormat('dd MMM yyyy').format(parsedDate);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +143,35 @@ class AnnouncementCard extends StatelessWidget {
       badgeTextColor = const Color(0xFF6B8AFF);
     }
 
+    Widget? buildImageWidget() {
+      final imgData = announcement.imageBase64;
+      if (imgData == null || imgData.isEmpty) return null;
+
+      if (imgData.startsWith('http://') || imgData.startsWith('https://')) {
+        return Image.network(
+          imgData,
+          height: 150,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+        );
+      }
+
+      try {
+        return Image.memory(
+          base64Decode(imgData),
+          height: 150,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+        );
+      } catch (_) {
+        return null;
+      }
+    }
+
+    final imageWidget = buildImageWidget();
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -147,14 +183,7 @@ class AnnouncementCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (announcement.imageBase64 != null &&
-              announcement.imageBase64!.isNotEmpty)
-            Image.memory(
-              base64Decode(announcement.imageBase64!),
-              height: 150,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          ?imageWidget,
 
           Padding(
             padding: const EdgeInsets.all(16),
@@ -206,7 +235,7 @@ class AnnouncementCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  announcement.date,
+                  formatDate(announcement.date),
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade400,
