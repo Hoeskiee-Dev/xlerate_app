@@ -6,6 +6,7 @@ import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/misc/colors.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_detail_dialog.dart';
 import 'package:xlerate/presentation/pages/productivity/task_list_page.dart';
+import 'package:xlerate/presentation/pages/program/program_detail/program_detail_page.dart';
 import 'package:xlerate/presentation/providers/programs/attended_program_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/streak_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
@@ -746,61 +747,73 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
   Widget _buildUpcomingCard(Program program) {
     final programDate = program.parsedStartDate;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.deepOrangeAccent,
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgramDetailPage(
+              programId: program.id!,
             ),
-            child: Center(
-              child: Text(
-                programDate != null ? '${programDate.day}' : '-',
-                style: const TextStyle(
-                  color: Colors.deepOrangeAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.deepOrangeAccent,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  programDate != null ? '${programDate.day}' : '-',
+                  style: const TextStyle(
+                    color: Colors.deepOrangeAccent,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  program.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                    color: Colors.black87,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (program.time.isNotEmpty) ...[
-                  const SizedBox(height: 2),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    program.time,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    program.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  if (program.time.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      program.time,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          const Icon(Icons.chevron_right, color: Colors.grey),
-        ],
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }
