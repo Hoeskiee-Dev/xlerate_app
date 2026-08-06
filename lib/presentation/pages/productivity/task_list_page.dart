@@ -8,6 +8,7 @@ import 'package:xlerate/presentation/pages/productivity/methods/task_header.dart
 import 'package:xlerate/presentation/pages/productivity/methods/task_search_bar.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/tasks_list.dart';
 import 'package:xlerate/presentation/providers/tasks/remove_task_provider.dart';
+import 'package:xlerate/presentation/providers/tasks/task_search_query.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/update_task_status_provider.dart';
 
@@ -31,6 +32,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(tasksListProvider);
+    final searchQuery = ref.watch(taskSearchQueryProvider);
 
     return Scaffold(
       body: ListView(
@@ -41,8 +43,11 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
           // * Search bar
           taskSearchBar(
             controller: searchController,
-            onSubmitted: (value) {
-              // ! TODO : Implement notifier for search query
+            onChanged: (value) {
+              ref.read(taskSearchQueryProvider.notifier).setQuery(value);
+            },
+            onClear: () {
+              ref.read(taskSearchQueryProvider.notifier).clear();
             },
           ),
 
@@ -77,6 +82,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
               showTaskDetailDialog(context, task);
             },
             tasksAsync: tasksAsync,
+            searchQuery: searchQuery,
             selectedPriority: selectedPriority,
             onStatusChanged: (task, isDone) {
               if (isDone == null) return;
