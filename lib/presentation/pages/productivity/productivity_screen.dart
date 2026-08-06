@@ -779,7 +779,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                 child: Text(
                   programDate != null ? '${programDate.day}' : '-',
                   style: const TextStyle(
-                    color: Colors.deepOrangeAccent,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

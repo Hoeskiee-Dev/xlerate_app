@@ -117,9 +117,9 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
               verticalSpaces(16),
 
               feedbackButton(
-                isEventEnded: true,
+                isEventEnded: isEnded,
                 isSubmitted: isFeedbackSubmitted,
-                onPressed: (true && !isFeedbackSubmitted)
+                onPressed: (isEnded && !isFeedbackSubmitted)
                     ? () async {
                         final formToLoad = displayProgram.feedbackForm;
                         if (formToLoad != null) {
@@ -196,7 +196,6 @@ class _ProgramDetailPageState extends ConsumerState<ProgramDetailPage> {
         ),
       ),
 
-      // --- BOTTOM NAVIGATION BAR: DYNAMIC APPLY / APPLIED STATE ---
       bottomNavigationBar: hasApplied
           ? Container(
               padding: const EdgeInsets.all(16),
