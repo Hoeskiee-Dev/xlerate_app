@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xlerate/domain/entities/program.dart';
 import 'package:xlerate/domain/entities/task.dart';
 import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/misc/colors.dart';
 import 'package:xlerate/presentation/pages/productivity/methods/task_detail_dialog.dart';
 import 'package:xlerate/presentation/pages/productivity/task_list_page.dart';
+import 'package:xlerate/presentation/providers/programs/attended_program_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/streak_provider.dart';
 import 'package:xlerate/presentation/providers/tasks/tasks_list_provider.dart';
 
@@ -17,7 +19,6 @@ class ProductivityScreen extends ConsumerStatefulWidget {
 
 class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
   bool showCalendar = false;
-  int weeklyStreak = 4;
 
   DateTime get today => DateTime.now();
   late DateTime displayedMonth;
@@ -111,6 +112,7 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
   @override
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(tasksListProvider);
+    final attendedProgramsAsync = ref.watch(attendedProgramProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -201,9 +203,25 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                     child: SingleChildScrollView(
                       child: tasksAsync.when(
                         data: (tasks) {
-                          return showCalendar
-                              ? _buildCalendarView(tasks)
-                              : _buildChecklistView(tasks);
+                          return attendedProgramsAsync.when(
+                            data: (userPrograms) {
+                              return showCalendar
+                                  ? _buildCalendarView(tasks, userPrograms)
+                                  : _buildChecklistView(tasks);
+                            },
+                            loading: () => const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(32.0),
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            error: (err, _) => Center(
+                              child: Text(
+                                'Error loading programs: $err',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          );
                         },
                         loading: () => const Center(
                           child: Padding(
@@ -470,8 +488,31 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
     );
   }
 
-  Widget _buildCalendarView(List<Task> allTasks) {
+  Widget _buildCalendarView(List<Task> allTasks, List<Program> userPrograms) {
     final taskDueDays = _taskDueDaysInDisplayedMonth(allTasks);
+
+    final programDays = userPrograms
+        .where((p) {
+          final pDate = p.parsedStartDate;
+          return pDate != null &&
+              pDate.year == displayedMonth.year &&
+              pDate.month == displayedMonth.month;
+        })
+        .map((p) => p.parsedStartDate!.day)
+        .toSet();
+
+    final todayStart = DateTime(today.year, today.month, today.day);
+    final upcomingPrograms = userPrograms.where((p) {
+      final pDate = p.parsedStartDate;
+      if (pDate == null) return false;
+      return pDate.isAfter(todayStart.subtract(const Duration(days: 1)));
+    }).toList();
+
+    upcomingPrograms.sort((a, b) {
+      final aDate = a.parsedStartDate ?? DateTime(2099);
+      final bDate = b.parsedStartDate ?? DateTime(2099);
+      return aDate.compareTo(bDate);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -536,7 +577,58 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
           }).toList(),
         ),
         const SizedBox(height: 8),
-        _buildCalendarGrid(taskDueDays, allTasks),
+        _buildCalendarGrid(taskDueDays, programDays, allTasks, userPrograms),
+        const SizedBox(height: 20),
+
+        Row(
+          children: [
+            const Icon(Icons.check, size: 14, color: Colors.deepPurple),
+            const SizedBox(width: 4),
+            Text(
+              'Task Due',
+              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+            ),
+            const SizedBox(width: 16),
+            Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                color: Colors.deepPurple,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Program Event',
+              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Upcoming',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        if (upcomingPrograms.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                'no event attended',
+                style: TextStyle(color: Colors.grey[500], fontSize: 14),
+              ),
+            ),
+          )
+        else
+          ...upcomingPrograms.map((program) => _buildUpcomingCard(program)),
       ],
     );
   }
@@ -553,7 +645,12 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
     return days;
   }
 
-  Widget _buildCalendarGrid(Set<int> taskDueDays, List<Task> allTasks) {
+  Widget _buildCalendarGrid(
+    Set<int> taskDueDays,
+    Set<int> programDays,
+    List<Task> allTasks,
+    List<Program> userPrograms,
+  ) {
     int daysInMonth = _daysInMonth(displayedMonth);
     int firstWeekday = _firstWeekday(displayedMonth);
 
@@ -571,10 +668,11 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
 
       dayCells.add(
         GestureDetector(
-          onTap: () => _showDayTasksPopup(day, allTasks),
+          onTap: () => _showDayTasksPopup(day, allTasks, userPrograms),
           child: _buildDayCell(
             day,
             taskDueDays.contains(day),
+            programDays.contains(day),
             isToday,
           ),
         ),
@@ -589,36 +687,126 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
     );
   }
 
-  Widget _buildDayCell(int day, bool isTaskDay, bool isToday) {
+  Widget _buildDayCell(
+    int day,
+    bool isTaskDay,
+    bool isProgramDay,
+    bool isToday,
+  ) {
     return Stack(
       alignment: Alignment.center,
       children: [
         if (isToday)
           Container(
-            width: 28,
-            height: 28,
+            width: 30,
+            height: 30,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.deepPurple, width: 2),
             ),
           ),
-        Text(
-          '$day',
-          style: TextStyle(
-            fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+        if (isProgramDay)
+          Container(
+            width: 28,
+            height: 28,
+            decoration: const BoxDecoration(
+              color: Colors.deepPurple,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '$day',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          )
+        else
+          Text(
+            '$day',
+            style: TextStyle(
+              fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
-        ),
-        if (isTaskDay)
+        if (isTaskDay && !isProgramDay)
           const Positioned(
             top: 2,
-            right: 10,
+            right: 8,
             child: Icon(Icons.check, size: 12, color: Colors.deepPurple),
           ),
       ],
     );
   }
 
-  void _showDayTasksPopup(int day, List<Task> allTasks) {
+  Widget _buildUpcomingCard(Program program) {
+    final programDate = program.parsedStartDate;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.deepPurple.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                programDate != null ? '${programDate.day}' : '-',
+                style: const TextStyle(
+                  color: Colors.deepPurple,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  program.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (program.time.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    program.time,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: Colors.grey),
+        ],
+      ),
+    );
+  }
+
+  void _showDayTasksPopup(
+    int day,
+    List<Task> allTasks,
+    List<Program> userPrograms,
+  ) {
     final selectedDate = DateTime(
       displayedMonth.year,
       displayedMonth.month,
@@ -647,6 +835,14 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
           task.endDate >= startOfSelectedDay;
     }).toList();
 
+    final dayPrograms = userPrograms.where((p) {
+      final pDate = p.parsedStartDate;
+      return pDate != null &&
+          pDate.year == selectedDate.year &&
+          pDate.month == selectedDate.month &&
+          pDate.day == selectedDate.day;
+    }).toList();
+
     showDialog(
       context: context,
       builder: (context) {
@@ -668,6 +864,30 @@ class _ProductivityScreenState extends ConsumerState<ProductivityScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (dayPrograms.isNotEmpty) ...[
+                  const Text(
+                    'Programs',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ...dayPrograms.map(
+                    (p) => ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(
+                        Icons.event,
+                        color: Colors.deepPurple,
+                      ),
+                      title: Text(p.title),
+                      subtitle: Text(p.time),
+                    ),
+                  ),
+                  const Divider(),
+                ],
                 const Text(
                   'Tasks',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),

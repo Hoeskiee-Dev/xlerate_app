@@ -49,6 +49,19 @@ abstract class Program with _$Program {
 
   int get joinedCount => joinedUserIds.length;
 
+  DateTime? get parsedStartDate {
+    try {
+      final parts = startDate.split('/');
+      if (parts.length != 3) return null;
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse('20${parts[2]}');
+      return DateTime(year, month, day);
+    } catch (_) {
+      return null;
+    }
+  }
+
   factory Program.fromJson(Map<String, dynamic> json) =>
       _$ProgramFromJson(json);
 }
