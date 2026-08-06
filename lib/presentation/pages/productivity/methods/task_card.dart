@@ -3,9 +3,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:xlerate/domain/entities/task.dart';
 import 'package:xlerate/domain/entities/task_priority.dart';
 import 'package:xlerate/presentation/misc/colors.dart';
+import 'package:xlerate/presentation/pages/productivity/methods/task_detail_dialog.dart';
 
 Widget taskCard({
   required Task task,
+  required BuildContext context,
   void Function(bool?)? onStatusChanged,
   void Function()? onTap,
   VoidCallback? onDeletePressed,
@@ -74,7 +76,11 @@ Widget taskCard({
         ),
 
         child: GestureDetector(
-          onTap: onTap,
+          onTap:
+              onTap ??
+              () {
+                showTaskDetailDialog(context, task);
+              },
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
